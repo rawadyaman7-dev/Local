@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Le Local — Intendance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root{
+    --paper:#F6F6F3; --surface:#FFFFFF; --sunk:#EFEFEB;
+    --ink:#16191A; --muted:#6B716D; --faint:#9AA09B;
+    --line:#DEDFDA; --line-strong:#C8CAC4;
+    --pine:#285943; --pine-soft:#E4EDE7;
+    --signal:#B25B14; --signal-soft:#FAEDE0;
+    --alert:#A32E23; --alert-soft:#FAE5E2;
+    --shadow:0 1px 2px rgba(20,25,20,.06), 0 4px 14px rgba(20,25,20,.05);
+    --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+    --cond:"Barlow Condensed","Barlow",system-ui,sans-serif;
+    --body:"Barlow",system-ui,-apple-system,sans-serif;
+    color-scheme:light dark;
+    padding-top:env(safe-area-inset-top,0px);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#131614; --surface:#1C201E; --sunk:#242927;
+      --ink:#E9EBE8; --muted:#9BA29D; --faint:#767D78;
+      --line:#2E3431; --line-strong:#3E4643;
+      --pine:#72C09A; --pine-soft:#1E2E26;
+      --signal:#E0913F; --signal-soft:#2E2318;
+      --alert:#E0776A; --alert-soft:#301D1A;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.25);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+       font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+  img{max-width:100%}
+  button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
+  input,select,textarea{font:inherit;color:inherit}
+  :focus-visible{outline:2px solid var(--pine);outline-offset:2px;border-radius:4px}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  .app{max-width:560px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+
+  .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);
+       border-bottom:1px solid var(--line)}
+  .top-in{display:flex;align-items:center;gap:10px;padding:10px 16px}
+  .brand{font-family:var(--cond);font-weight:700;font-size:20px;letter-spacing:.02em;
+         text-transform:uppercase;line-height:1;flex:1;min-width:0}
+  .brand span{color:var(--pine)}
+  .whoami{display:flex;align-items:center;gap:7px;padding:5px 10px;border:1px solid var(--line-strong);
+          border-radius:999px;font-size:12.5px;font-weight:500;white-space:nowrap;max-width:60%}
+  .whoami b{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--pine);flex:none}
+  .dot.adm{background:var(--signal)}
+  .povbar{display:flex;align-items:center;gap:8px;padding:7px 16px;background:var(--signal-soft);
+          border-bottom:1px solid var(--line);font-size:12.5px;color:var(--signal)}
+  .povbar button{margin-left:auto;font-family:var(--cond);text-transform:uppercase;font-size:12px;
+                 font-weight:600;letter-spacing:.06em;color:var(--signal);border-bottom:1px solid}
+
+  .wrap{padding:16px;padding-block:16px;flex:1}
+  .eyebrow{font-family:var(--cond);text-transform:uppercase;letter-spacing:.09em;font-size:12.5px;
+           font-weight:600;color:var(--muted);margin:0 0 8px;display:flex;align-items:center;gap:8px}
+  .eyebrow.sp{margin-top:22px}
+  .eyebrow button{margin-left:auto;font-size:12px;color:var(--pine);font-weight:600;
+                  text-transform:none;letter-spacing:0}
+  .code{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+  .num{font-variant-numeric:tabular-nums}
+
+  .banner{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:11px 13px;
+          font-size:13px;color:var(--muted);margin-bottom:16px}
+  .banner.err{background:var(--alert-soft);border-color:var(--alert);color:var(--alert)}
+
+  .stats{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;
+         overflow:hidden;margin-bottom:18px}
+  .stat{flex:1;background:var(--surface);padding:11px 12px;min-width:0}
+  .stat .v{font-family:var(--cond);font-size:26px;font-weight:700;line-height:1;
+           font-variant-numeric:tabular-nums}
+  .stat .l{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.25}
+  .stat.out .v{color:var(--signal)} .stat.late .v{color:var(--alert)}
+
+  .rows{display:flex;flex-direction:column;gap:8px}
+  .row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);
+       border:1px solid var(--line);border-radius:10px;padding:13px 14px;box-shadow:var(--shadow)}
+  .row:hover{border-color:var(--line-strong)}
+  .row-bar{width:3px;align-self:stretch;border-radius:2px;background:var(--line-strong);flex:none}
+  .row[data-out="1"] .row-bar{background:var(--signal)}
+  .row.zero .row-bar{background:var(--line)}
+  .row-main{flex:1;min-width:0}
+  .row-name{font-family:var(--cond);font-size:18px;font-weight:600;line-height:1.15}
+  .row-sub{font-size:12.5px;color:var(--muted);margin-top:1px}
+  .row-right{text-align:right;flex:none}
+  .row-count{font-family:var(--mono);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+  .row-out{font-size:11.5px;color:var(--signal);font-weight:600;margin-top:1px}
+  .chev{color:var(--faint);flex:none;font-size:18px}
+  .row.zero .row-count{color:var(--faint);font-weight:400}
+
+  .tag{display:inline-block;font-family:var(--cond);text-transform:uppercase;letter-spacing:.06em;
+       font-size:11px;font-weight:600;padding:1px 6px;border-radius:4px;background:var(--pine-soft);
+       color:var(--pine);vertical-align:1px}
+  .tag.sh{background:var(--signal-soft);color:var(--signal)}
+  .tag.lk{background:var(--alert-soft);color:var(--alert)}
+
+  .items{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);
+         border-radius:10px;overflow:hidden}
+  .item{display:flex;align-items:center;gap:11px;background:var(--surface);padding:10px 13px;
+        width:100%;text-align:left}
+  .item.sel{background:var(--pine-soft)}
+  .item.gone{opacity:.5}
+  .box{width:20px;height:20px;border:1.5px solid var(--line-strong);border-radius:5px;flex:none;
+       display:grid;place-items:center;font-size:12px;color:transparent;background:var(--surface)}
+  .item.sel .box{background:var(--pine);border-color:var(--pine);color:#fff}
+  .item-main{flex:1;min-width:0}
+  .item-name{font-weight:500;line-height:1.25;overflow-wrap:anywhere}
+  .item-meta{display:flex;gap:8px;align-items:baseline;margin-top:2px;flex-wrap:wrap}
+  .qty{font-family:var(--mono);font-size:13px;font-weight:600;flex:none;color:var(--muted);
+       font-variant-numeric:tabular-nums;text-align:right}
+  .qty b{display:block;color:var(--ink);font-size:14px}
+  .pill{font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;white-space:nowrap;
+        font-family:var(--cond);text-transform:uppercase;letter-spacing:.05em}
+  .pill.out{background:var(--signal-soft);color:var(--signal)}
+  .pill.late{background:var(--alert-soft);color:var(--alert)}
+  .pill.exp{background:var(--alert-soft);color:var(--alert)}
+  .pill.soon{background:var(--signal-soft);color:var(--signal)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 18px;
+       border-radius:9px;font-family:var(--cond);font-size:16px;font-weight:600;letter-spacing:.03em;
+       text-transform:uppercase;line-height:1}
+  .btn.primary{background:var(--pine);color:#fff}
+  .btn.danger{background:var(--alert);color:#fff}
+  .btn.ghost{border:1px solid var(--line-strong)}
+  .btn.wide{width:100%}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .actionbar{position:sticky;bottom:0;z-index:15;background:var(--surface);border-top:1px solid var(--line);
+             padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
+             display:flex;gap:9px;flex-wrap:wrap}
+  .actionbar .btn{flex:1;min-width:120px}
+
+  .tabs{position:sticky;bottom:0;z-index:18;display:flex;background:var(--surface);
+        border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .tab{flex:1;padding:9px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;
+       font-family:var(--cond);font-size:12.5px;font-weight:600;text-transform:uppercase;
+       letter-spacing:.05em;color:var(--faint);position:relative}
+  .tab[aria-selected="true"]{color:var(--pine)}
+  .tab .ic{font-size:17px;line-height:1}
+  .tab .badge{position:absolute;top:4px;left:50%;margin-left:6px;background:var(--signal);color:#fff;
+              font-family:var(--mono);font-size:9.5px;padding:0 4px;border-radius:999px}
+
+  .search{display:flex;align-items:center;gap:9px;background:var(--surface);
+          border:1px solid var(--line-strong);border-radius:9px;padding:0 12px;margin-bottom:14px}
+  .search input{flex:1;border:none;background:none;padding:12px 0;outline:none;font-size:16px}
+
+  .crumb{display:flex;align-items:flex-start;gap:11px;margin-bottom:14px}
+  .back{font-size:22px;color:var(--muted);padding:2px 4px;margin-left:-4px;flex:none}
+  .crumb h2{font-family:var(--cond);font-size:23px;font-weight:700;line-height:1.1;margin:0;
+            text-wrap:balance}
+  .crumb p{margin:3px 0 0;font-size:12.5px;color:var(--muted)}
+
+  .seg{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;
+       overflow:hidden;margin-bottom:12px}
+  .seg button{flex:1;background:var(--surface);padding:7px 6px;font-size:12.5px;font-weight:500}
+  .seg button[aria-pressed="true"]{background:var(--pine);color:#fff;font-weight:600}
+
+  .scrim{position:fixed;inset:0;z-index:40;background:rgba(15,20,17,.45);display:flex;
+         align-items:flex-end;justify-content:center}
+  .sheet{background:var(--surface);width:100%;max-width:560px;border-radius:16px 16px 0 0;padding:18px 16px;
+         padding-bottom:calc(18px + env(safe-area-inset-bottom,0px));max-height:90%;overflow:auto;
+         border:1px solid var(--line);border-bottom:none}
+  .sheet h3{font-family:var(--cond);font-size:21px;font-weight:700;margin:0 0 3px}
+  .sheet .lede{font-size:13px;color:var(--muted);margin:0 0 15px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-family:var(--cond);text-transform:uppercase;letter-spacing:.07em;
+               font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
+  .field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid var(--line-strong);
+    border-radius:8px;background:var(--surface);font-size:16px;outline:none}
+  .two{display:flex;gap:10px}.two>*{flex:1}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{padding:8px 13px;border:1px solid var(--line-strong);border-radius:999px;font-size:13.5px}
+  .chip[aria-pressed="true"]{background:var(--pine);border-color:var(--pine);color:#fff}
+  .recap{background:var(--sunk);border-radius:8px;padding:10px 12px;margin-bottom:15px;font-size:13px;
+         max-height:150px;overflow:auto}
+  .recap .ln{display:flex;justify-content:space-between;gap:10px;padding:3px 0;align-items:center}
+  .recap input{width:64px;padding:5px 7px;border:1px solid var(--line-strong);border-radius:6px;
+               background:var(--surface);font-family:var(--mono);text-align:right;font-size:14px}
+
+  .outcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:13px 14px;
+           margin-bottom:9px;box-shadow:var(--shadow)}
+  .outcard.late{border-color:var(--alert)}
+  .outhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:7px}
+  .outwho{font-family:var(--cond);font-size:17px;font-weight:600}
+  .outwhen{font-size:12px;color:var(--muted);white-space:nowrap}
+  .outcard.late .outwhen{color:var(--alert);font-weight:600}
+  .outlist{display:flex;flex-wrap:wrap;gap:5px}
+  .tagitem{background:var(--sunk);border-radius:6px;padding:3px 8px;font-size:12.5px}
+
+  .empty{text-align:center;padding:34px 20px;color:var(--muted)}
+  .empty .big{font-family:var(--cond);font-size:19px;font-weight:600;color:var(--ink);margin-bottom:5px}
+  .note{font-size:12.5px;color:var(--faint);margin-top:16px;line-height:1.45}
+  .spin{text-align:center;padding:60px 20px;color:var(--muted);font-family:var(--cond);
+        text-transform:uppercase;letter-spacing:.08em;font-size:14px}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:86px;z-index:60;background:var(--ink);
+         color:var(--paper);padding:10px 16px;border-radius:999px;font-size:13.5px;font-weight:500;
+         box-shadow:var(--shadow);max-width:90%}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="top-in">
+      <div class="brand">Le <span>Local</span></div>
+      <button class="whoami" id="whoBtn"><span class="dot" id="whoDot"></span><b id="whoName">…</b></button>
+    </div>
+    <div id="povbar"></div>
+  </header>
+  <main class="wrap" id="main"><div class="spin">Chargement…</div></main>
+  <div id="actions"></div>
+  <nav class="tabs" id="tabs">
+    <button class="tab" data-tab="home" aria-selected="true"><span class="ic">▤</span>Inventaire</button>
+    <button class="tab" data-tab="search" aria-selected="false"><span class="ic">⌕</span>Chercher</button>
+    <button class="tab" data-tab="out" aria-selected="false"><span class="ic">↗</span>Dehors<span class="badge" id="outBadge" hidden></span></button>
+  </nav>
+</div>
+<div id="modal"></div>
+<div id="toast"></div>
+
+<script>
+/* ======================= configuration ======================= */
+const API = "https://raspy-sound-6175.rawadyaman7.workers.dev/api";
+const RETARD = 21;                 // jours avant qu'une sortie passe en rouge
+const EXP_SOON = 30;               // jours avant péremption = alerte orange
+const MOTIFS = ["Camp","Sortie / week-end","Réunion","Réparation","Prêt à une autre unité","Autre"];
+
+/* ======================= petites aides ======================= */
+const $ = id => document.getElementById(id);
+const esc = s => (s??"").toString().replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm = s => (s||"").toString().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+const days = iso => Math.floor((Date.now()-new Date(iso).getTime())/86400000);
+const daysTo = iso => Math.ceil((new Date(iso).getTime()-Date.now())/86400000);
+const first = v => Array.isArray(v) ? v[0] : v;
+const arr = v => Array.isArray(v) ? v : (v ? [v] : []);
+let toastT;
+function toast(msg){
+  $("toast").innerHTML = `<div class="toast">${esc(msg)}</div>`;
+  clearTimeout(toastT); toastT = setTimeout(()=>$("toast").innerHTML="", 2600);
+}
+
+/* ======================= accès Airtable ======================= */
+async function apiGet(table){
+  const out = []; let offset = null;
+  do{
+    const u = new URL(API + "/" + table);
+    u.searchParams.set("pageSize","100");
+    if(offset) u.searchParams.set("offset", offset);
+    const r = await fetch(u);
+    if(!r.ok) throw new Error(table + " : " + r.status);
+    const j = await r.json();
+    out.push(...(j.records||[]));
+    offset = j.offset || null;
+  } while(offset);
+  return out;
+}
+async function apiPost(table, records){
+  const r = await fetch(API + "/" + table, {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({records, typecast:true})
+  });
+  if(!r.ok) throw new Error(await r.text());
+  return (await r.json()).records;
+}
+async function apiAuth(code){
+  const r = await fetch(API.replace(/\/api$/,"") + "/auth", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({code})
+  });
+  if(!r.ok) throw new Error("Vérification impossible");
+  return r.json();
+}
+async function apiPatch(table, records){
+  const r = await fetch(API + "/" + table, {
+    method:"PATCH", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({records, typecast:true})
+  });
+  if(!r.ok) throw new Error(await r.text());
+  return (await r.json()).records;
+}
+
+/* ======================= état ======================= */
+const DB = { unites:[], cats:[], objets:[], conso:[], personnes:[], mvts:[] };
+const IX = { unite:{}, cat:{}, objet:{}, personne:{} };
+const S = {
+  tab:"home", ctx:null, cat:null, sel:new Set(), q:"", me:null, pov:null,
+  interval:25, loading:true, error:null
+};
+const LS = "local-intendance-v2";
+try{ const r = localStorage.getItem(LS); if(r) S.me = JSON.parse(r); }catch(e){}
+try{ const i = localStorage.getItem(LS+"-interval"); if(i) S.interval = +i; }catch(e){}
+
+const isAdmin = () => !S.pov;
+const uName = id => (IX.unite[id]?.f["Nom"]) || "—";
+const kids  = id => DB.unites.filter(u => first(u.f["Unité parente"]) === id && u.f["Actif"]);
+const roots = () => DB.unites.filter(u => !u.f["Unité parente"]);
+function subtree(id){ const o=[id]; for(const k of kids(id)) o.push(...subtree(k.id)); return o; }
+function scopeIds(){ return S.pov ? subtree(S.pov) : DB.unites.map(u=>u.id); }
+
+/* les catégories visibles pour une unité : celles sans unité (base) + celles qui la citent */
+function catsFor(unitId, parentId){
+  return DB.cats.filter(c => {
+    if(!c.f["Active"]) return false;
+    const p = first(c.f["Catégorie parente"]) || null;
+    if(p !== (parentId||null)) return false;
+    const us = arr(c.f["Unités"]);
+    return us.length === 0 || us.includes(unitId);
+  }).sort((a,b)=>(a.f["Ordre"]||99)-(b.f["Ordre"]||99));
+}
+function catOf(rec){
+  const id = first(rec.f["Catégorie"]);
+  if(id && IX.cat[id]) return IX.cat[id];
+  // reprise : les lignes pas encore reliées gardent leur ancienne catégorie en texte
+  const t = rec.f["Catégorie (texte, remplacé)"];
+  return t ? DB.cats.find(c => c.f["Nom"] === t) || null : null;
+}
+const isShared = c => !!(c && c.f["Partagée"]);
+const isLocked = c => !!(c && c.f["Verrouillée"]);
+const canEdit  = c => isAdmin() || !isLocked(c);
+
+/* toutes les lignes (objets + consommables) d'une unité et d'une catégorie */
+function linesOf(unitId, catId){
+  const pick = (rec, isConso) => {
+    const c = catOf(rec); if(!c || c.id !== catId) return null;
+    const us = arr(rec.f["Unité"]);
+    if(isShared(c)){ if(!us.includes(unitId) && us.length) return null; }
+    else if(!us.includes(unitId)) return null;
+    return { rec, conso:isConso, cat:c };
+  };
+  const out = [];
+  for(const o of DB.objets){ const x = pick(o,false); if(x) out.push(x); }
+  for(const o of DB.conso){  const x = pick(o,true);  if(x) out.push(x); }
+  return out.filter(l => !l.rec.f["Archivé"]);
+}
+
+/* quantité actuellement sortie, par objet, calculée depuis le journal */
+function outByObject(){
+  const m = {};
+  for(const mv of DB.mvts){
+    const oid = first(mv.f["Objet"]); if(!oid) continue;
+    const q = mv.f["Quantité"] || 1;
+    const t = mv.f["Type"];
+    if(t === "Sortie") m[oid] = (m[oid]||0) + q;
+    else if(t === "Retour") m[oid] = (m[oid]||0) - q;
+    else if(t === "Perte déclarée" || t === "Casse déclarée") m[oid] = (m[oid]||0) - q;
+  }
+  for(const k in m) if(m[k] <= 0) delete m[k];
+  return m;
+}
+/* dernière sortie encore ouverte, par objet — pour "qui l'a, depuis quand" */
+function openSorties(){
+  const outQ = outByObject(), byObj = {};
+  for(const mv of DB.mvts){
+    if(mv.f["Type"] !== "Sortie") continue;
+    const oid = first(mv.f["Objet"]); if(!oid || !outQ[oid]) continue;
+    const cur = byObj[oid];
+    if(!cur || (mv.f["Date"]||"") > (cur.f["Date"]||"")) byObj[oid] = mv;
+  }
+  return byObj;
+}
+let OUTQ = {}, OPEN = {};
+function recompute(){ OUTQ = outByObject(); OPEN = openSorties(); }
+
+/* ======================= chargement ======================= */
+async function load(){
+  S.loading = true; S.error = null; render();
+  try{
+    const [unites, cats, objets, conso, personnes, mvts] = await Promise.all([
+      apiGet("unites"), apiGet("categories"), apiGet("objets"),
+      apiGet("consommables"), apiGet("personnes"), apiGet("mouvements")
+    ]);
+    const map = r => ({ id:r.id, f:r.fields||{} });
+    DB.unites = unites.map(map); DB.cats = cats.map(map);
+    DB.objets = objets.map(map); DB.conso = conso.map(map);
+    DB.personnes = personnes.map(map); DB.mvts = mvts.map(map);
+    IX.unite = {}; DB.unites.forEach(u=>IX.unite[u.id]=u);
+    IX.cat = {};   DB.cats.forEach(c=>IX.cat[c.id]=c);
+    IX.objet = {}; DB.objets.forEach(o=>IX.objet[o.id]=o); DB.conso.forEach(o=>IX.objet[o.id]=o);
+    IX.personne = {}; DB.personnes.forEach(p=>IX.personne[p.id]=p);
+    recompute();
+    if(S.me && S.me.role === "gerant" && !S.pov) S.pov = S.me.unite;
+    if(S.pov && !S.ctx) S.ctx = S.pov;
+    S.loading = false;
+  }catch(e){
+    S.loading = false; S.error = e.message || String(e);
+  }
+  render();
+}
+
+/* ======================= rendu ======================= */
+function render(){
+  $("whoName").textContent = S.me ? S.me.nom : "Qui es-tu ?";
+  $("whoDot").className = "dot" + (isAdmin() ? " adm" : "");
+  $("povbar").innerHTML = S.pov
+    ? `<div class="povbar">Vue gérant · <b>${esc(uName(S.pov))}</b><button id="povOff">Vue intendant</button></div>` : "";
+  const off = $("povOff");
+  if(off) off.onclick = ()=>{ S.pov=null; S.ctx=null; S.cat=null; S.sel.clear(); render(); };
+
+  document.querySelectorAll(".tab").forEach(t =>
+    t.setAttribute("aria-selected", String(t.dataset.tab === S.tab)));
+
+  if(S.loading){ $("main").innerHTML = `<div class="spin">Chargement…</div>`; $("actions").innerHTML=""; return; }
+  if(S.error){
+    $("main").innerHTML = `<div class="banner err"><b>Impossible de joindre la base.</b><br>${esc(S.error)}</div>
+      <button class="btn primary wide" id="retry">Réessayer</button>`;
+    $("retry").onclick = load; $("actions").innerHTML=""; return;
+  }
+
+  if(!S.me){
+    $("main").innerHTML = `<div class="empty" style="padding-top:70px">
+      <div class="big">Le Local</div>
+      Entre le code de ton unité pour ouvrir l'inventaire.</div>`;
+    $("actions").innerHTML = `<div class="actionbar">
+      <button class="btn primary wide" id="login">Entrer mon code</button></div>`;
+    $("login").onclick = sheetLogin;
+    if(!document.querySelector(".scrim")) sheetLogin();
+    return;
+  }
+
+  const scoped = Object.keys(OUTQ).filter(id => {
+    const o = IX.objet[id]; if(!o) return false;
+    return arr(o.f["Unité"]).some(u => scopeIds().includes(u));
+  });
+  const b = $("outBadge"); b.hidden = !scoped.length; b.textContent = scoped.length;
+
+  if(S.tab === "search") return renderSearch();
+  if(S.tab === "out")    return renderOut(scoped);
+  if(S.cat)              return renderCat();
+  if(S.ctx)              return renderUnit();
+  if(S.pov){ S.ctx = S.pov; return renderUnit(); }
+  return renderHome();
+}
+
+function countsFor(unitId){
+  let total = 0, out = 0;
+  for(const id of subtree(unitId)){
+    for(const src of [DB.objets, DB.conso]){
+      for(const r of src){
+        if(r.f["Archivé"]) continue;
+        if(!arr(r.f["Unité"]).includes(id)) continue;
+        total++; if(OUTQ[r.id]) out++;
+      }
+    }
+  }
+  return {total, out};
+}
+
+function renderHome(){
+  $("actions").innerHTML = "";
+  let total = 0, out = 0, late = 0;
+  for(const src of [DB.objets, DB.conso]) for(const r of src){
+    if(r.f["Archivé"]) continue; total++;
+    if(OUTQ[r.id]){ out++; const mv = OPEN[r.id]; if(mv && days(mv.f["Date"]) >= RETARD) late++; }
+  }
+  $("main").innerHTML = `
+    <div class="stats">
+      <div class="stat"><div class="v num">${total}</div><div class="l">lignes inventoriées</div></div>
+      <div class="stat out"><div class="v num">${out}</div><div class="l">sorties du local</div></div>
+      <div class="stat late"><div class="v num">${late}</div><div class="l">dehors &gt; ${RETARD}j</div></div>
+    </div>
+    <div class="eyebrow">Le groupe</div>
+    <div class="rows">${roots().filter(u=>u.f["Actif"]).map(u=>{
+      const c = countsFor(u.id), k = kids(u.id).length;
+      return `<button class="row ${c.total?"":"zero"}" data-go="${u.id}" data-out="${c.out?1:0}">
+        <span class="row-bar"></span>
+        <span class="row-main"><span class="row-name">${esc(u.f["Nom"])}</span>
+          <span class="row-sub">${esc(u.f["Type"]||"")}${k?` · ${k} patrouille${k>1?"s":""}`:""}</span></span>
+        <span class="row-right"><div class="row-count num">${c.total}</div>
+          ${c.out?`<div class="row-out num">${c.out} dehors</div>`:""}</span>
+        <span class="chev">›</span></button>`;
+    }).join("")}</div>`;
+  wireGo();
+}
+
+function renderUnit(){
+  const u = IX.unite[S.ctx]; if(!u){ S.ctx=null; return render(); }
+  const c = countsFor(u.id);
+  const ks = kids(u.id);
+  const cats = catsFor(u.id, null);
+  const canUp = !S.pov || u.id !== S.pov;
+  $("main").innerHTML = `
+    <div class="crumb">
+      ${canUp?`<button class="back" id="back" aria-label="Retour">‹</button>`:""}
+      <div><h2>${esc(u.f["Nom"])}</h2>
+        <p>${esc(u.f["Type"]||"")} · ${c.total} ligne${c.total>1?"s":""}${c.out?` · ${c.out} dehors`:""}</p></div>
+    </div>
+    ${ks.length?`<div class="eyebrow">Bancoffre</div>
+      <div class="rows">${ks.map(k=>{
+        const kc = countsFor(k.id);
+        return `<button class="row ${kc.total?"":"zero"}" data-go="${k.id}" data-out="${kc.out?1:0}">
+          <span class="row-bar"></span>
+          <span class="row-main"><span class="row-name">${esc(k.f["Nom"])}</span>
+            <span class="row-sub">${kc.total?`${kc.total} lignes`:"pas encore inventoriée"}</span></span>
+          <span class="row-right"><div class="row-count num">${kc.total}</div>
+            ${kc.out?`<div class="row-out num">${kc.out} dehors</div>`:""}</span>
+          <span class="chev">›</span></button>`;}).join("")}</div>`:""}
+    <div class="eyebrow ${ks.length?"sp":""}">Catégories</div>
+    ${cats.length ? `<div class="rows">${cats.map(cat=>catRow(cat,u.id)).join("")}</div>`
+      : `<div class="empty"><div class="big">Aucune catégorie</div>Rien n'est encore configuré pour cette unité.</div>`}`;
+  const bk = $("back");
+  if(bk) bk.onclick = ()=>{ S.ctx = first(u.f["Unité parente"]) || (S.pov||null); S.sel.clear(); render(); scrollTo(0,0); };
+  wireGo(); wireCat();
+}
+
+function catRow(cat, unitId){
+  const subs = catsFor(unitId, cat.id);
+  let n = linesOf(unitId, cat.id).length, out = 0;
+  for(const l of linesOf(unitId, cat.id)) if(OUTQ[l.rec.id]) out++;
+  for(const s of subs){ const ls = linesOf(unitId, s.id); n += ls.length; out += ls.filter(l=>OUTQ[l.rec.id]).length; }
+  const badges = [isShared(cat)?`<span class="tag sh">partagé</span>`:"",
+                  isLocked(cat)?`<span class="tag lk">verrouillé</span>`:""].join(" ");
+  return `<button class="row ${n?"":"zero"}" data-cat="${cat.id}" data-out="${out?1:0}">
+    <span class="row-bar"></span>
+    <span class="row-main"><span class="row-name">${esc(cat.f["Nom"])}</span>
+      <span class="row-sub">${subs.length?`${subs.length} sous-section${subs.length>1?"s":""} · `:""}${badges||""}</span></span>
+    <span class="row-right"><div class="row-count num">${n}</div>
+      ${out?`<div class="row-out num">${out} dehors</div>`:""}</span>
+    <span class="chev">›</span></button>`;
+}
+
+/* regroupement des lignes mesurées par intervalle */
+function bucket(v, step){ const lo = Math.floor(v/step)*step; return [lo, lo+step]; }
+
+function renderCat(){
+  const cat = IX.cat[S.cat], u = IX.unite[S.ctx];
+  if(!cat || !u){ S.cat=null; return render(); }
+  const subs = catsFor(u.id, cat.id);
+  const lines = linesOf(u.id, cat.id);
+  const mesure = cat.f["Mesure"] || "Aucune";
+  const measured = /Longueur|Diam|Volume/.test(mesure);
+  const editable = canEdit(cat);
+
+  let body = "";
+  if(subs.length){
+    body += `<div class="eyebrow">Sous-sections</div>
+      <div class="rows">${subs.map(s=>catRow(s,u.id)).join("")}</div>`;
+  }
+  if(lines.length || !subs.length){
+    if(subs.length) body += `<div class="eyebrow sp">Directement ici</div>`;
+    if(measured){
+      body += `<div class="seg" id="seg">
+        <button data-step="10" aria-pressed="${S.interval===10}">par 10 cm</button>
+        <button data-step="25" aria-pressed="${S.interval===25}">par 25 cm</button>
+        <button data-step="0" aria-pressed="${S.interval===0}">tout détailler</button></div>`;
+    }
+    body += lines.length ? renderLines(lines, mesure, measured)
+      : `<div class="empty"><div class="big">Rien ici</div>${
+          editable ? "Ajoute la première ligne avec le bouton en bas."
+                   : "Cette catégorie est verrouillée — demande à l'intendant."}</div>`;
+  }
+
+  $("main").innerHTML = `
+    <div class="crumb"><button class="back" id="back" aria-label="Retour">‹</button>
+      <div><h2>${esc(cat.f["Nom"])}</h2>
+        <p>${esc(u.f["Nom"])} · ${lines.length} ligne${lines.length>1?"s":""}
+        ${isShared(cat)?" · <span class='tag sh'>stock partagé</span>":""}
+        ${isLocked(cat)&&!isAdmin()?" · <span class='tag lk'>lecture seule</span>":""}</p></div>
+    </div>${body}
+    ${isShared(cat)?`<p class="note">Stock commun : ce que ton unité prend, l'autre le voit manquer.</p>`:""}`;
+
+  $("back").onclick = ()=>{
+    S.cat = first(cat.f["Catégorie parente"]) || null; S.sel.clear(); render(); scrollTo(0,0); };
+  const seg = $("seg");
+  if(seg) seg.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    S.interval = +b.dataset.step;
+    try{ localStorage.setItem(LS+"-interval", S.interval); }catch(e){}
+    render(); });
+  wireCat(); wireItems(); renderActions(cat);
+}
+
+function renderLines(lines, mesure, measured){
+  const key = mesure.startsWith("Longueur") ? "Longueur (cm)"
+            : mesure.startsWith("Diam") ? "Longueur (cm)"
+            : mesure.startsWith("Volume") ? "Volume (L)" : null;
+  if(measured && key && S.interval > 0){
+    const groups = {};
+    for(const l of lines){
+      const v = l.rec.f[key];
+      const g = (v==null) ? "sans mesure" : bucket(v, S.interval).join("–") + (key.includes("L")?" L":" cm");
+      (groups[g] ||= []).push(l);
+    }
+    return Object.entries(groups).sort((a,b)=>a[0].localeCompare(b[0],"fr",{numeric:true}))
+      .map(([g,ls]) => {
+        const tot = ls.reduce((s,l)=>s+(l.rec.f["Quantité"]||0),0);
+        const out = ls.reduce((s,l)=>s+(OUTQ[l.rec.id]||0),0);
+        return `<div class="eyebrow sp">${esc(g)} — ${tot} pièce${tot>1?"s":""}${out?` · ${out} dehors`:""}</div>
+                <div class="items">${ls.map(itemRow).join("")}</div>`;
+      }).join("");
+  }
+  return `<div class="items">${lines.map(itemRow).join("")}</div>`;
+}
+
+function itemRow(l){
+  const r = l.rec, f = r.f;
+  const out = OUTQ[r.id] || 0;
+  const q = f["Quantité"] ?? null;
+  const mv = OPEN[r.id];
+  const det = [f["Taille / détail"], f["Longueur (cm)"] != null ? f["Longueur (cm)"]+" cm" : null,
+               f["Volume (L)"] != null ? f["Volume (L)"]+" L" : null, f["Usage"]]
+              .filter(Boolean).join(" · ");
+  let pills = "";
+  if(out){ const d = mv ? days(mv.f["Date"]) : 0;
+    pills += `<span class="pill ${d>=RETARD?"late":"out"}">${out} dehors${d?` · ${d}j`:""}</span>`; }
+  const exp = f["Date d'expiration"];
+  if(exp){ const dd = daysTo(exp);
+    pills += dd < 0 ? `<span class="pill exp">périmé</span>`
+           : dd <= EXP_SOON ? `<span class="pill soon">expire dans ${dd}j</span>` : ""; }
+  if(f["État"] === "Perdu") pills += `<span class="pill exp">perdu</span>`;
+  const dispo = (q!=null) ? Math.max(0, q - out) : null;
+  return `<button class="item ${S.sel.has(r.id)?"sel":""} ${f["État"]==="Perdu"?"gone":""}" data-id="${r.id}">
+    <span class="box">✓</span>
+    <span class="item-main"><span class="item-name">${esc(f["Nom"]||f["Code"]||"—")}</span>
+      <span class="item-meta">${det?`<span class="code">${esc(det)}</span>`:""}${pills}</span></span>
+    <span class="qty">${dispo!=null?`<b>${dispo}</b>${out?`sur ${q}`:"dispo"}`:"—"}</span></button>`;
+}
+
+function renderSearch(){
+  $("actions").innerHTML = "";
+  const q = norm(S.q), scope = scopeIds();
+  const hits = !q ? [] : [...DB.objets, ...DB.conso].filter(r=>{
+    if(r.f["Archivé"]) return false;
+    if(!arr(r.f["Unité"]).some(u=>scope.includes(u))) return false;
+    const c = catOf(r);
+    return norm(r.f["Nom"]).includes(q) || norm(r.f["Code"]).includes(q)
+        || norm(r.f["Usage"]).includes(q) || norm(c&&c.f["Nom"]).includes(q);
+  }).slice(0,120);
+  $("main").innerHTML = `
+    <div class="search"><span style="color:var(--faint);font-size:17px">⌕</span>
+      <input id="q" type="search" placeholder="tanjara, mal23a, mal de tête…" value="${esc(S.q)}"
+             autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+    ${!q ? `<div class="empty"><div class="big">Cherche n'importe quoi</div>
+        Nom, code, usage d'un médicament, catégorie.${S.pov?`<br>Limité à ${esc(uName(S.pov))}.`:""}</div>`
+      : hits.length ? `<div class="eyebrow">${hits.length} résultat${hits.length>1?"s":""}</div>
+          <div class="items">${hits.map(r=>itemRow({rec:r})).join("")}</div>`
+      : `<div class="empty"><div class="big">Rien pour « ${esc(S.q)} »</div>
+         Essaie une autre orthographe.</div>`}`;
+  const i = $("q");
+  i.oninput = ()=>{ S.q = i.value; const p = i.selectionStart; render();
+    const n = $("q"); n.focus(); n.setSelectionRange(p,p); };
+  wireItems(); renderActions(null);
+}
+
+function renderOut(scoped){
+  $("actions").innerHTML = "";
+  if(!scoped.length){
+    $("main").innerHTML = `<div class="empty"><div class="big">Tout est au local</div>
+      Rien n'est sorti${S.pov?` chez ${esc(uName(S.pov))}`:""}.</div>`; return;
+  }
+  const groups = {};
+  for(const id of scoped){
+    const mv = OPEN[id]; if(!mv) continue;
+    const who = (arr(mv.f["Personne"]).map(p=>IX.personne[p]?.f["Nom"]).filter(Boolean)[0]) || "?";
+    const k = [who, mv.f["Motif"]||"", (mv.f["Date"]||"").slice(0,10)].join("|");
+    (groups[k] ||= {mv, who, items:[]}).items.push(id);
+  }
+  $("main").innerHTML = `<div class="eyebrow">${scoped.length} ligne${scoped.length>1?"s":""} hors du local</div>
+    ${Object.values(groups).sort((a,b)=>(a.mv.f["Date"]||"").localeCompare(b.mv.f["Date"]||"")).map(g=>{
+      const d = days(g.mv.f["Date"]);
+      const unit = arr(g.mv.f["Unité emprunteuse"]).map(uName)[0] || "";
+      return `<div class="outcard ${d>=RETARD?"late":""}">
+        <div class="outhead"><div><div class="outwho">${esc(g.who)}</div>
+          <div class="row-sub">${unit?`<span class="tag">${esc(unit)}</span>`:""}${
+            g.mv.f["Motif"]?" · "+esc(g.mv.f["Motif"]):""}${
+            g.mv.f["Chez qui"]?" · chez "+esc(g.mv.f["Chez qui"]):""}</div></div>
+          <div class="outwhen">${d} jour${d>1?"s":""}</div></div>
+        <div class="outlist">${g.items.map(id=>{
+          const o = IX.objet[id];
+          return `<span class="tagitem">${esc(o?o.f["Nom"]:id)} ×${OUTQ[id]}</span>`;}).join("")}</div></div>`;
+    }).join("")}
+    <p class="note">Au-delà de ${RETARD} jours la fiche passe en rouge.</p>`;
+}
+
+/* ======================= barre d'actions ======================= */
+function renderActions(cat){
+  const n = S.sel.size;
+  const editable = cat ? canEdit(cat) : false;
+  if(!n){
+    $("actions").innerHTML = (cat && editable)
+      ? `<div class="actionbar"><button class="btn primary wide" id="add">+ Ajouter une ligne</button></div>` : "";
+    const a = $("add"); if(a) a.onclick = ()=> S.me ? sheetItem(null, cat) : sheetWho();
+    return;
+  }
+  const ids = [...S.sel];
+  const nOut = ids.filter(i=>OUTQ[i]).length, nIn = ids.filter(i=>!OUTQ[i]).length;
+  $("actions").innerHTML = `<div class="actionbar">
+    <button class="btn ghost" id="clr">Annuler</button>
+    ${nIn?`<button class="btn primary" id="take">Je prends (${nIn})</button>`:""}
+    ${nOut?`<button class="btn primary" id="give">Je rends (${nOut})</button>`:""}
+    ${(n===1)?`<button class="btn ghost" id="more">···</button>`:""}
+  </div>`;
+  $("clr").onclick = ()=>{ S.sel.clear(); render(); };
+  const t=$("take"), g=$("give"), m=$("more");
+  if(t) t.onclick = ()=> S.me ? sheetMove(ids.filter(i=>!OUTQ[i]), "Sortie") : sheetWho();
+  if(g) g.onclick = ()=> S.me ? sheetMove(ids.filter(i=>OUTQ[i]),  "Retour") : sheetWho();
+  if(m) m.onclick = ()=> sheetMore(ids[0], cat);
+}
+
+/* ======================= feuilles ======================= */
+function closeSheet(){ $("modal").innerHTML=""; }
+function openSheet(html){
+  $("modal").innerHTML = `<div class="scrim" id="scrim"><div class="sheet">${html}</div></div>`;
+  $("scrim").onclick = e => { if(e.target.id==="scrim") closeSheet(); };
+}
+
+function sheetWho(){
+  if(S.me){
+    openSheet(`<h3>${esc(S.me.nom)}</h3>
+      <p class="lede">${esc(uName(S.me.unite))} · ${S.me.role==="intendant"?"Intendant du groupe":"Gérant d'unité"}</p>
+      <button class="btn ghost wide" id="out" style="margin-bottom:10px">Changer de code</button>
+      <button class="btn primary wide" id="close">Fermer</button>`);
+    $("close").onclick = closeSheet;
+    $("out").onclick = ()=>{
+      S.me=null; S.pov=null; S.ctx=null; S.cat=null; S.sel.clear();
+      try{ localStorage.removeItem(LS); }catch(e){}
+      sheetLogin();
+    };
+    return;
+  }
+  sheetLogin();
+}
+
+function sheetLogin(){
+  openSheet(`<h3>Code d'accès</h3>
+    <p class="lede">Le code de ton unité. Demande-le à l'intendant du groupe.</p>
+    <div class="field"><label for="cd">Code</label>
+      <input id="cd" type="text" placeholder="CEN-0000" autocapitalize="characters"
+             autocomplete="off" spellcheck="false" style="font-family:var(--mono);letter-spacing:.08em"></div>
+    <div class="field"><label for="nm">Ton prénom</label>
+      <input id="nm" type="text" placeholder="Rawad" autocomplete="given-name"></div>
+    <div id="loginErr"></div>
+    <button class="btn primary wide" id="ok">Entrer</button>`);
+  const go = async ()=>{
+    const code = $("cd").value.trim(), nom = $("nm").value.trim();
+    if(!code) return $("cd").focus();
+    if(!nom) return $("nm").focus();
+    const btn = $("ok"); btn.disabled = true; btn.textContent = "Vérification…";
+    let res;
+    try{ res = await apiAuth(code); }
+    catch(e){ res = {ok:false, reason:"Serveur injoignable"}; }
+    if(!res.ok){
+      btn.disabled = false; btn.textContent = "Entrer";
+      $("loginErr").innerHTML = `<div class="banner err">${esc(res.reason||"Code refusé")}</div>`;
+      return;
+    }
+    let p = DB.personnes.find(x => norm(x.f["Nom"]) === norm(nom));
+    if(!p){
+      try{
+        const [rec] = await apiPost("personnes", [{fields:{ Nom:nom, "Unité":[res.unitId], Actif:true,
+          "Rôle": res.role==="intendant" ? "Intendant de groupe" : "Gérant d'unité" }}]);
+        p = {id:rec.id, f:rec.fields}; DB.personnes.push(p); IX.personne[p.id]=p;
+      }catch(e){ /* on continue sans fiche personne */ }
+    }
+    S.me = { nom, unite:res.unitId, role:res.role, pid: p ? p.id : null };
+    try{ localStorage.setItem(LS, JSON.stringify(S.me)); }catch(e){}
+    S.pov = res.role === "gerant" ? res.unitId : null;
+    S.ctx = S.pov; S.cat = null; S.sel.clear();
+    closeSheet();
+    if(DB.unites.length) render(); else load();
+  };
+  $("ok").onclick = go;
+  $("cd").onkeydown = e => { if(e.key==="Enter") $("nm").focus(); };
+  $("nm").onkeydown = e => { if(e.key==="Enter") go(); };
+  setTimeout(()=>$("cd").focus(), 50);
+}
+
+function sheetMove(ids, type){
+  const sortie = type === "Sortie";
+  let motif = "Camp";
+  const qtys = {};
+  ids.forEach(id=>{
+    const o = IX.objet[id];
+    qtys[id] = sortie ? Math.max(1,(o.f["Quantité"]||1) - (OUTQ[id]||0)) : (OUTQ[id]||1);
+  });
+  openSheet(`<h3>${sortie?"Tu prends":"Tu rends"} ${ids.length} ligne${ids.length>1?"s":""}</h3>
+    <p class="lede">Ajuste les quantités si tu n'en prends qu'une partie.</p>
+    <div class="recap">${ids.map(id=>{
+      const o = IX.objet[id];
+      const max = sortie ? (o.f["Quantité"]||1) - (OUTQ[id]||0) : (OUTQ[id]||1);
+      return `<div class="ln"><span>${esc(o.f["Nom"])}</span>
+        <input type="number" min="1" max="${max}" value="${qtys[id]}" data-q="${id}"></div>`;
+    }).join("")}</div>
+    ${sortie?`<div class="field"><label>Pour quoi faire</label>
+      <div class="chips" id="mt">${MOTIFS.map(m=>
+        `<button class="chip" data-m="${esc(m)}" aria-pressed="${m===motif}">${esc(m)}</button>`).join("")}</div></div>
+      <div class="two">
+        <div class="field"><label for="due">Retour prévu</label><input id="due" type="date"></div>
+        <div class="field"><label for="chez">Où ça part</label><input id="chez" type="text" placeholder="chez Jad, au camp…"></div>
+      </div>`:""}
+    <button class="btn primary wide" id="ok">Confirmer</button>`);
+  const mt = $("mt");
+  if(mt) mt.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
+    motif = c.dataset.m; mt.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===c))); });
+  $("ok").onclick = async ()=>{
+    document.querySelectorAll("[data-q]").forEach(i=>{ qtys[i.dataset.q] = Math.max(1, +i.value || 1); });
+    const due = $("due") ? $("due").value : "", chez = $("chez") ? $("chez").value.trim() : "";
+    closeSheet();
+    await commit(ids.map(id=>({
+      fields:{
+        Type: type, Date: new Date().toISOString(), "Quantité": qtys[id],
+        Objet:[id], ...(S.me.pid?{Personne:[S.me.pid]}:{}),
+        "Unité emprunteuse":[S.me.unite],
+        ...(sortie?{Motif:motif}:{}), ...(due?{"Retour prévu":due}:{}), ...(chez?{"Chez qui":chez}:{})
+      }})), sortie ? "Sortie enregistrée" : "Retour enregistré");
+  };
+}
+
+function sheetMore(id, cat){
+  const o = IX.objet[id];
+  const editable = cat ? canEdit(cat) : isAdmin();
+  openSheet(`<h3>${esc(o.f["Nom"])}</h3>
+    <p class="lede">${esc(o.f["Code"]||"")}</p>
+    <div class="rows">
+      ${editable?`<button class="row" id="edit"><span class="row-bar"></span>
+        <span class="row-main"><span class="row-name">Modifier</span>
+          <span class="row-sub">nom, quantité, taille</span></span><span class="chev">›</span></button>`:""}
+      <button class="row" id="lost"><span class="row-bar"></span>
+        <span class="row-main"><span class="row-name">Déclarer perdu</span>
+          <span class="row-sub">retiré de l'inventaire actif, gardé dans l'historique</span></span>
+        <span class="chev">›</span></button>
+      ${editable?`<button class="row" id="arch"><span class="row-bar"></span>
+        <span class="row-main"><span class="row-name">Archiver</span>
+          <span class="row-sub">n'apparaît plus, rien n'est effacé</span></span><span class="chev">›</span></button>`:""}
+    </div>`);
+  const e=$("edit"), l=$("lost"), a=$("arch");
+  if(e) e.onclick = ()=> sheetItem(o, cat);
+  if(l) l.onclick = async ()=>{
+    closeSheet();
+    const q = OUTQ[id] || o.f["Quantité"] || 1;
+    await apiPatch("objets",[{id, fields:{"État":"Perdu"}}]).catch(()=>{});
+    await commit([{fields:{Type:"Perte déclarée", Date:new Date().toISOString(), "Quantité":q,
+      Objet:[id], ...(S.me&&S.me.pid?{Personne:[S.me.pid]}:{}), Notes:"Déclaré perdu depuis l'app"}}],
+      "Marqué perdu");
+  };
+  if(a) a.onclick = async ()=>{
+    closeSheet();
+    try{ await apiPatch("objets",[{id, fields:{"Archivé":true}}]); toast("Archivé"); await load(); }
+    catch(err){ toast("Échec de l'archivage"); }
+  };
+}
+
+function sheetItem(o, cat){
+  const isNew = !o;
+  const mesure = cat ? (cat.f["Mesure"]||"Aucune") : "Aucune";
+  const conso = cat && cat.f["Type de contenu"] === "Consommables";
+  const table = conso ? "consommables" : "objets";
+  openSheet(`<h3>${isNew?"Nouvelle ligne":"Modifier"}</h3>
+    <p class="lede">${esc(cat?cat.f["Nom"]:"")}${cat&&isShared(cat)?" · stock partagé":""}</p>
+    <div class="field"><label for="nm">Nom</label>
+      <input id="nm" type="text" value="${esc(o?o.f["Nom"]:"")}" placeholder="tanjara medium"></div>
+    <div class="two">
+      <div class="field"><label for="qt">Quantité</label>
+        <input id="qt" type="number" min="0" value="${o&&o.f["Quantité"]!=null?o.f["Quantité"]:1}"></div>
+      ${mesure.startsWith("Longueur")||mesure.startsWith("Diam")?`
+        <div class="field"><label for="ln">${esc(mesure)}</label>
+          <input id="ln" type="number" step="0.1" value="${o&&o.f["Longueur (cm)"]!=null?o.f["Longueur (cm)"]:""}"></div>`
+      : mesure.startsWith("Volume")?`
+        <div class="field"><label for="vl">Volume (L)</label>
+          <input id="vl" type="number" step="0.1" value="${o&&o.f["Volume (L)"]!=null?o.f["Volume (L)"]:""}"></div>`
+      :`<div class="field"><label for="tl">Taille / détail</label>
+          <input id="tl" type="text" value="${esc(o?o.f["Taille / détail"]:"")}" placeholder="kbire, grande…"></div>`}
+    </div>
+    ${conso?`<div class="two">
+      <div class="field"><label for="us">Usage</label>
+        <input id="us" type="text" value="${esc(o?o.f["Usage"]:"")}" placeholder="mal de tête"></div>
+      <div class="field"><label for="ex">Expiration</label>
+        <input id="ex" type="date" value="${o&&o.f["Date d'expiration"]?o.f["Date d'expiration"]:""}"></div>
+    </div>`:""}
+    <button class="btn primary wide" id="ok">${isNew?"Ajouter":"Enregistrer"}</button>`);
+  $("ok").onclick = async ()=>{
+    const nom = $("nm").value.trim(); if(!nom) return $("nm").focus();
+    const f = { Nom:nom, "Quantité": +$("qt").value || 0 };
+    if($("ln") && $("ln").value !== "") f["Longueur (cm)"] = +$("ln").value;
+    if($("vl") && $("vl").value !== "") f["Volume (L)"] = +$("vl").value;
+    if($("tl")) f["Taille / détail"] = $("tl").value.trim();
+    if($("us")) f["Usage"] = $("us").value.trim();
+    if($("ex") && $("ex").value) f["Date d'expiration"] = $("ex").value;
+    closeSheet();
+    try{
+      if(isNew){
+        f["Unité"] = isShared(cat) ? arr(cat.f["Unités"]) : [S.ctx];
+        f["Catégorie"] = [cat.id];
+        f["Code"] = codeFor(cat);
+        if(!conso) f["État"] = "Bon";
+        await apiPost(table, [{fields:f}]);
+        toast("Ligne ajoutée");
+      }else{
+        await apiPatch(o.f["Usage"]!==undefined||conso?"consommables":"objets", [{id:o.id, fields:f}]);
+        toast("Enregistré");
+      }
+      await load();
+    }catch(e){ toast("Échec de l'enregistrement"); }
+  };
+}
+function codeFor(cat){
+  const u = IX.unite[S.ctx];
+  const uc = (u && u.f["Code"]) || "XXX";
+  const cc = norm(cat.f["Nom"]).replace(/[^a-z]/g,"").slice(0,3).toUpperCase() || "GEN";
+  const n = [...DB.objets, ...DB.conso].filter(r => (r.f["Code"]||"").startsWith(`${uc}-${cc}-`)).length + 1;
+  return `${uc}-${cc}-${String(n).padStart(2,"0")}`;
+}
+
+async function commit(records, okMsg){
+  try{
+    for(let i=0;i<records.length;i+=10) await apiPost("mouvements", records.slice(i,i+10));
+    S.sel.clear(); toast(okMsg); await load();
+  }catch(e){ toast("Échec : " + (e.message||"")); }
+}
+
+/* ======================= câblage ======================= */
+function wireGo(){ document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{
+  S.ctx=b.dataset.go; S.cat=null; S.sel.clear(); render(); scrollTo(0,0); }); }
+function wireCat(){ document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{
+  S.cat=b.dataset.cat; S.sel.clear(); render(); scrollTo(0,0); }); }
+function wireItems(){ document.querySelectorAll(".item").forEach(b=>b.onclick=()=>{
+  const id=b.dataset.id; S.sel.has(id)?S.sel.delete(id):S.sel.add(id);
+  render(); }); }
+
+$("whoBtn").onclick = sheetWho;
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
+  S.tab=t.dataset.tab;
+  if(t.dataset.tab==="home"){ S.ctx=S.pov; S.cat=null; }
+  S.sel.clear(); render(); scrollTo(0,0); });
+
+load();
+</script>
+</body>
+</html>
