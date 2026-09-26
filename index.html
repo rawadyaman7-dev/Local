@@ -44,7 +44,6 @@
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
   .app{max-width:560px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
-
   .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);
        border-bottom:1px solid var(--line)}
   .top-in{display:flex;align-items:center;gap:10px;padding:10px 16px}
@@ -58,18 +57,13 @@
   .dot.adm{background:var(--signal)}
   .povbar{display:flex;align-items:center;gap:8px;padding:7px 16px;background:var(--signal-soft);
           border-bottom:1px solid var(--line);font-size:12.5px;color:var(--signal)}
-  .povbar button{margin-left:auto;font-family:var(--cond);text-transform:uppercase;font-size:12px;
-                 font-weight:600;letter-spacing:.06em;color:var(--signal);border-bottom:1px solid}
 
   .wrap{padding:16px;padding-block:16px;flex:1}
   .eyebrow{font-family:var(--cond);text-transform:uppercase;letter-spacing:.09em;font-size:12.5px;
            font-weight:600;color:var(--muted);margin:0 0 8px;display:flex;align-items:center;gap:8px}
-  .eyebrow.sp{margin-top:22px}
-  .eyebrow button{margin-left:auto;font-size:12px;color:var(--pine);font-weight:600;
-                  text-transform:none;letter-spacing:0}
+  .eyebrow.sp{margin-top:24px}
   .code{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
   .num{font-variant-numeric:tabular-nums}
-
   .banner{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:11px 13px;
           font-size:13px;color:var(--muted);margin-bottom:16px}
   .banner.err{background:var(--alert-soft);border-color:var(--alert);color:var(--alert)}
@@ -104,21 +98,28 @@
   .tag.sh{background:var(--signal-soft);color:var(--signal)}
   .tag.lk{background:var(--alert-soft);color:var(--alert)}
 
-  .items{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);
-         border-radius:10px;overflow:hidden}
-  .item{display:flex;align-items:center;gap:11px;background:var(--surface);padding:10px 13px;
-        width:100%;text-align:left}
-  .item.sel{background:var(--pine-soft)}
-  .item.gone{opacity:.5}
-  .box{width:20px;height:20px;border:1.5px solid var(--line-strong);border-radius:5px;flex:none;
-       display:grid;place-items:center;font-size:12px;color:transparent;background:var(--surface)}
-  .item.sel .box{background:var(--pine);border-color:var(--pine);color:#fff}
-  .item-main{flex:1;min-width:0}
-  .item-name{font-weight:500;line-height:1.25;overflow-wrap:anywhere}
-  .item-meta{display:flex;gap:8px;align-items:baseline;margin-top:2px;flex-wrap:wrap}
-  .qty{font-family:var(--mono);font-size:13px;font-weight:600;flex:none;color:var(--muted);
-       font-variant-numeric:tabular-nums;text-align:right}
-  .qty b{display:block;color:var(--ink);font-size:14px}
+  /* ---------- blocs objets ---------- */
+  .blocks{display:flex;flex-direction:column;gap:8px}
+  .blk{display:flex;align-items:stretch;gap:0;background:var(--surface);border:1px solid var(--line);
+       border-radius:10px;box-shadow:var(--shadow);overflow:hidden}
+  .blk.out{border-color:var(--signal)}
+  .blk.gone{opacity:.55}
+  .blk-pick{display:flex;align-items:center;padding:0 0 0 12px}
+  .blk-body{flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:11px 12px;text-align:left}
+  .blk-txt{flex:1;min-width:0}
+  .blk-name{font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+  .blk-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:3px}
+  .blk-qty{flex:none;text-align:right;min-width:62px}
+  .blk-qty .n{font-family:var(--cond);font-size:22px;font-weight:700;line-height:1;
+              font-variant-numeric:tabular-nums}
+  .blk-qty .n.part{color:var(--signal)}
+  .blk-qty .loc{font-size:10.5px;color:var(--faint);margin-top:3px;line-height:1.2;
+                overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:96px;margin-left:auto}
+  .blk-dots{flex:none;width:40px;border-left:1px solid var(--line);display:grid;place-items:center;
+            font-size:18px;color:var(--muted);letter-spacing:1px}
+  .blk-dots:hover{background:var(--sunk);color:var(--ink)}
+  .blk-thumb{width:38px;height:38px;border-radius:7px;object-fit:cover;flex:none;background:var(--sunk)}
+
   .pill{font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;white-space:nowrap;
         font-family:var(--cond);text-transform:uppercase;letter-spacing:.05em}
   .pill.out{background:var(--signal-soft);color:var(--signal)}
@@ -126,12 +127,18 @@
   .pill.exp{background:var(--alert-soft);color:var(--alert)}
   .pill.soon{background:var(--signal-soft);color:var(--signal)}
 
+  .cbox{width:22px;height:22px;border:1.5px solid var(--line-strong);border-radius:6px;flex:none;
+        display:grid;place-items:center;font-size:13px;color:transparent;background:var(--surface)}
+  .blk.sel .cbox{background:var(--pine);border-color:var(--pine);color:#fff}
+  .blk.sel{background:var(--pine-soft)}
+
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 18px;
        border-radius:9px;font-family:var(--cond);font-size:16px;font-weight:600;letter-spacing:.03em;
        text-transform:uppercase;line-height:1}
   .btn.primary{background:var(--pine);color:#fff}
   .btn.danger{background:var(--alert);color:#fff}
   .btn.ghost{border:1px solid var(--line-strong)}
+  .btn.sm{padding:8px 12px;font-size:13.5px}
   .btn.wide{width:100%}
   .btn:disabled{opacity:.45;cursor:not-allowed}
   .actionbar{position:sticky;bottom:0;z-index:15;background:var(--surface);border-top:1px solid var(--line);
@@ -141,12 +148,12 @@
 
   .tabs{position:sticky;bottom:0;z-index:18;display:flex;background:var(--surface);
         border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
-  .tab{flex:1;padding:9px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;
-       font-family:var(--cond);font-size:12.5px;font-weight:600;text-transform:uppercase;
-       letter-spacing:.05em;color:var(--faint);position:relative}
+  .tab{flex:1;padding:9px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;
+       font-family:var(--cond);font-size:11.5px;font-weight:600;text-transform:uppercase;
+       letter-spacing:.04em;color:var(--faint);position:relative}
   .tab[aria-selected="true"]{color:var(--pine)}
   .tab .ic{font-size:17px;line-height:1}
-  .tab .badge{position:absolute;top:4px;left:50%;margin-left:6px;background:var(--signal);color:#fff;
+  .tab .badge{position:absolute;top:4px;left:50%;margin-left:5px;background:var(--signal);color:#fff;
               font-family:var(--mono);font-size:9.5px;padding:0 4px;border-radius:999px}
 
   .search{display:flex;align-items:center;gap:9px;background:var(--surface);
@@ -181,20 +188,18 @@
   .chip{padding:8px 13px;border:1px solid var(--line-strong);border-radius:999px;font-size:13.5px}
   .chip[aria-pressed="true"]{background:var(--pine);border-color:var(--pine);color:#fff}
   .recap{background:var(--sunk);border-radius:8px;padding:10px 12px;margin-bottom:15px;font-size:13px;
-         max-height:150px;overflow:auto}
-  .recap .ln{display:flex;justify-content:space-between;gap:10px;padding:3px 0;align-items:center}
+         max-height:190px;overflow:auto}
+  .recap .ln{display:flex;justify-content:space-between;gap:10px;padding:4px 0;align-items:center}
   .recap input{width:64px;padding:5px 7px;border:1px solid var(--line-strong);border-radius:6px;
                background:var(--surface);font-family:var(--mono);text-align:right;font-size:14px}
-
-  .outcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:13px 14px;
-           margin-bottom:9px;box-shadow:var(--shadow)}
-  .outcard.late{border-color:var(--alert)}
-  .outhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:7px}
-  .outwho{font-family:var(--cond);font-size:17px;font-weight:600}
-  .outwhen{font-size:12px;color:var(--muted);white-space:nowrap}
-  .outcard.late .outwhen{color:var(--alert);font-weight:600}
-  .outlist{display:flex;flex-wrap:wrap;gap:5px}
-  .tagitem{background:var(--sunk);border-radius:6px;padding:3px 8px;font-size:12.5px}
+  .menu{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);
+        border-radius:10px;overflow:hidden}
+  .menu button{background:var(--surface);padding:13px 14px;text-align:left;display:flex;
+               align-items:center;gap:11px;font-size:15px}
+  .menu button:hover{background:var(--sunk)}
+  .menu button .mi{width:20px;text-align:center;color:var(--muted);flex:none}
+  .menu button.dgr{color:var(--alert)}
+  .menu button .msub{display:block;font-size:12px;color:var(--faint);margin-top:1px}
 
   .empty{text-align:center;padding:34px 20px;color:var(--muted)}
   .empty .big{font-family:var(--cond);font-size:19px;font-weight:600;color:var(--ink);margin-bottom:5px}
@@ -204,6 +209,7 @@
   .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:86px;z-index:60;background:var(--ink);
          color:var(--paper);padding:10px 16px;border-radius:999px;font-size:13.5px;font-weight:500;
          box-shadow:var(--shadow);max-width:90%}
+  .bigphoto{width:100%;border-radius:10px;margin-bottom:14px;background:var(--sunk)}
 </style>
 </head>
 <body>
@@ -219,8 +225,9 @@
   <div id="actions"></div>
   <nav class="tabs" id="tabs">
     <button class="tab" data-tab="home" aria-selected="true"><span class="ic">▤</span>Inventaire</button>
+    <button class="tab" data-tab="sorties" aria-selected="false"><span class="ic">↗</span>Sorties<span class="badge" id="outBadge" hidden></span></button>
+    <button class="tab" data-tab="lieux" aria-selected="false"><span class="ic">▣</span>Lieux</button>
     <button class="tab" data-tab="search" aria-selected="false"><span class="ic">⌕</span>Chercher</button>
-    <button class="tab" data-tab="out" aria-selected="false"><span class="ic">↗</span>Dehors<span class="badge" id="outBadge" hidden></span></button>
   </nav>
 </div>
 <div id="modal"></div>
@@ -228,12 +235,13 @@
 
 <script>
 /* ======================= configuration ======================= */
-const API = "https://raspy-sound-6175.rawadyaman7.workers.dev/api";
-const RETARD = 21;                 // jours avant qu'une sortie passe en rouge
-const EXP_SOON = 30;               // jours avant péremption = alerte orange
-const MOTIFS = ["Camp","Sortie / week-end","Réunion","Réparation","Prêt à une autre unité","Autre"];
+const ROOT = "https://raspy-sound-6175.rawadyaman7.workers.dev";
+const API  = ROOT + "/api";
+const RETARD = 21;      // jours dehors avant alerte rouge
+const EXP_SOON = 30;    // jours avant péremption = alerte orange
+const PHOTO_MAX = 1200; // côté le plus long, en pixels, après réduction
 
-/* ======================= petites aides ======================= */
+/* ======================= aides ======================= */
 const $ = id => document.getElementById(id);
 const esc = s => (s??"").toString().replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const norm = s => (s||"").toString().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
@@ -241,13 +249,14 @@ const days = iso => Math.floor((Date.now()-new Date(iso).getTime())/86400000);
 const daysTo = iso => Math.ceil((new Date(iso).getTime()-Date.now())/86400000);
 const first = v => Array.isArray(v) ? v[0] : v;
 const arr = v => Array.isArray(v) ? v : (v ? [v] : []);
+const today = () => new Date().toISOString().slice(0,10);
 let toastT;
 function toast(msg){
   $("toast").innerHTML = `<div class="toast">${esc(msg)}</div>`;
-  clearTimeout(toastT); toastT = setTimeout(()=>$("toast").innerHTML="", 2600);
+  clearTimeout(toastT); toastT = setTimeout(()=>$("toast").innerHTML="", 2800);
 }
 
-/* ======================= accès Airtable ======================= */
+/* ======================= Airtable via le Worker ======================= */
 async function apiGet(table){
   const out = []; let offset = null;
   do{
@@ -263,54 +272,76 @@ async function apiGet(table){
   return out;
 }
 async function apiPost(table, records){
-  const r = await fetch(API + "/" + table, {
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({records, typecast:true})
-  });
+  const r = await fetch(API + "/" + table, { method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({records, typecast:true}) });
+  if(!r.ok) throw new Error(await r.text());
+  return (await r.json()).records;
+}
+async function apiPatch(table, records){
+  const r = await fetch(API + "/" + table, { method:"PATCH",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({records, typecast:true}) });
   if(!r.ok) throw new Error(await r.text());
   return (await r.json()).records;
 }
 async function apiAuth(code){
-  const r = await fetch(API.replace(/\/api$/,"") + "/auth", {
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({code})
-  });
+  const r = await fetch(ROOT + "/auth", { method:"POST",
+    headers:{"Content-Type":"application/json"}, body: JSON.stringify({code}) });
   if(!r.ok) throw new Error("Vérification impossible");
   return r.json();
 }
-async function apiPatch(table, records){
-  const r = await fetch(API + "/" + table, {
-    method:"PATCH", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({records, typecast:true})
+async function apiUpload(table, recordId, dataUrl, filename){
+  const m = /^data:(image\/[a-z]+);base64,(.*)$/.exec(dataUrl);
+  if(!m) throw new Error("Image illisible");
+  const r = await fetch(ROOT + "/upload", { method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({table, recordId, contentType:m[1], file:m[2], filename}) });
+  if(!r.ok) throw new Error((await r.json().catch(()=>({}))).error || "Envoi refusé");
+  return r.json();
+}
+/* réduit la photo dans le navigateur : un téléphone produit 5 Mo, on envoie ~250 Ko */
+function shrink(file){
+  return new Promise((res, rej)=>{
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = ()=>{
+      URL.revokeObjectURL(url);
+      let {width:w, height:h} = img;
+      const k = Math.min(1, PHOTO_MAX/Math.max(w,h));
+      w = Math.round(w*k); h = Math.round(h*k);
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      c.getContext("2d").drawImage(img, 0, 0, w, h);
+      res(c.toDataURL("image/jpeg", 0.82));
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); rej(new Error("Image illisible")); };
+    img.src = url;
   });
-  if(!r.ok) throw new Error(await r.text());
-  return (await r.json()).records;
 }
 
 /* ======================= état ======================= */
-const DB = { unites:[], cats:[], objets:[], conso:[], personnes:[], mvts:[] };
-const IX = { unite:{}, cat:{}, objet:{}, personne:{} };
+const DB = { unites:[], cats:[], objets:[], conso:[], personnes:[], mvts:[], lieux:[], sorties:[] };
+const IX = { unite:{}, cat:{}, objet:{}, personne:{}, lieu:{}, sortie:{} };
 const S = {
-  tab:"home", ctx:null, cat:null, sel:new Set(), q:"", me:null, pov:null,
-  interval:25, loading:true, error:null
+  tab:"home", ctx:null, cat:null, lieu:null, sortie:null,
+  pick:null, sel:new Set(), q:"", me:null, pov:null, interval:25,
+  loading:true, error:null
 };
-const LS = "local-intendance-v2";
+const LS = "local-intendance-v3";
 try{ const r = localStorage.getItem(LS); if(r) S.me = JSON.parse(r); }catch(e){}
-try{ const i = localStorage.getItem(LS+"-interval"); if(i) S.interval = +i; }catch(e){}
+try{ const i = localStorage.getItem(LS+"-int"); if(i) S.interval = +i; }catch(e){}
 
 const isAdmin = () => !S.pov;
 const uName = id => (IX.unite[id]?.f["Nom"]) || "—";
 const kids  = id => DB.unites.filter(u => first(u.f["Unité parente"]) === id && u.f["Actif"]);
-const roots = () => DB.unites.filter(u => !u.f["Unité parente"]);
+const roots = () => DB.unites.filter(u => !u.f["Unité parente"] && u.f["Actif"]);
 function subtree(id){ const o=[id]; for(const k of kids(id)) o.push(...subtree(k.id)); return o; }
 function scopeIds(){ return S.pov ? subtree(S.pov) : DB.unites.map(u=>u.id); }
+const inScope = r => arr(r.f["Unité"]).some(u => scopeIds().includes(u));
 
-/* les catégories visibles pour une unité : celles sans unité (base) + celles qui la citent */
 function catsFor(unitId, parentId){
-  return DB.cats.filter(c => {
+  return DB.cats.filter(c=>{
     if(!c.f["Active"]) return false;
-    const p = first(c.f["Catégorie parente"]) || null;
-    if(p !== (parentId||null)) return false;
+    if((first(c.f["Catégorie parente"])||null) !== (parentId||null)) return false;
     const us = arr(c.f["Unités"]);
     return us.length === 0 || us.includes(unitId);
   }).sort((a,b)=>(a.f["Ordre"]||99)-(b.f["Ordre"]||99));
@@ -318,80 +349,87 @@ function catsFor(unitId, parentId){
 function catOf(rec){
   const id = first(rec.f["Catégorie"]);
   if(id && IX.cat[id]) return IX.cat[id];
-  // reprise : les lignes pas encore reliées gardent leur ancienne catégorie en texte
   const t = rec.f["Catégorie (texte, remplacé)"];
-  return t ? DB.cats.find(c => c.f["Nom"] === t) || null : null;
+  return t ? DB.cats.find(c=>c.f["Nom"]===t) || null : null;
+}
+/* l'emplacement vient du lien ; sinon on retombe sur l'ancien texte */
+function lieuOf(rec){
+  const id = first(rec.f["Emplacement"]) || first(rec.f["Emplacement (lien)"]);
+  if(id && IX.lieu[id]) return IX.lieu[id];
+  const t = rec.f["Emplacement habituel"] || rec.f["Emplacement"];
+  if(typeof t === "string" && t){
+    const n = norm(t).replace(/^local\s*[—-]\s*/,"");
+    return DB.lieux.find(l => norm(l.f["Nom"]) === n) || null;
+  }
+  return null;
 }
 const isShared = c => !!(c && c.f["Partagée"]);
 const isLocked = c => !!(c && c.f["Verrouillée"]);
 const canEdit  = c => isAdmin() || !isLocked(c);
+const isConso  = r => !!IX.objet[r.id] && DB.conso.some(x=>x.id===r.id);
+const tableOf  = r => DB.conso.some(x=>x.id===r.id) ? "consommables" : "objets";
 
-/* toutes les lignes (objets + consommables) d'une unité et d'une catégorie */
 function linesOf(unitId, catId){
-  const pick = (rec, isConso) => {
-    const c = catOf(rec); if(!c || c.id !== catId) return null;
-    const us = arr(rec.f["Unité"]);
-    if(isShared(c)){ if(!us.includes(unitId) && us.length) return null; }
-    else if(!us.includes(unitId)) return null;
-    return { rec, conso:isConso, cat:c };
-  };
   const out = [];
-  for(const o of DB.objets){ const x = pick(o,false); if(x) out.push(x); }
-  for(const o of DB.conso){  const x = pick(o,true);  if(x) out.push(x); }
-  return out.filter(l => !l.rec.f["Archivé"]);
+  const take = (rec)=>{
+    if(rec.f["Archivé"]) return;
+    const c = catOf(rec); if(!c || c.id !== catId) return;
+    const us = arr(rec.f["Unité"]);
+    if(isShared(c)){ if(us.length && !us.includes(unitId)) return; }
+    else if(!us.includes(unitId)) return;
+    out.push(rec);
+  };
+  DB.objets.forEach(take); DB.conso.forEach(take);
+  return out;
 }
 
-/* quantité actuellement sortie, par objet, calculée depuis le journal */
-function outByObject(){
+/* quantités actuellement dehors, calculées depuis le journal */
+let OUTQ = {}, OPEN = {};
+function recompute(){
   const m = {};
   for(const mv of DB.mvts){
     const oid = first(mv.f["Objet"]); if(!oid) continue;
-    const q = mv.f["Quantité"] || 1;
-    const t = mv.f["Type"];
+    const q = mv.f["Quantité"] || 1, t = mv.f["Type"];
     if(t === "Sortie") m[oid] = (m[oid]||0) + q;
-    else if(t === "Retour") m[oid] = (m[oid]||0) - q;
-    else if(t === "Perte déclarée" || t === "Casse déclarée") m[oid] = (m[oid]||0) - q;
+    else if(t === "Retour" || t === "Perte déclarée" || t === "Casse déclarée")
+      m[oid] = (m[oid]||0) - q;
   }
   for(const k in m) if(m[k] <= 0) delete m[k];
-  return m;
-}
-/* dernière sortie encore ouverte, par objet — pour "qui l'a, depuis quand" */
-function openSorties(){
-  const outQ = outByObject(), byObj = {};
+  OUTQ = m;
+  const open = {};
   for(const mv of DB.mvts){
     if(mv.f["Type"] !== "Sortie") continue;
-    const oid = first(mv.f["Objet"]); if(!oid || !outQ[oid]) continue;
-    const cur = byObj[oid];
-    if(!cur || (mv.f["Date"]||"") > (cur.f["Date"]||"")) byObj[oid] = mv;
+    const oid = first(mv.f["Objet"]); if(!oid || !OUTQ[oid]) continue;
+    const cur = open[oid];
+    if(!cur || (mv.f["Date"]||"") > (cur.f["Date"]||"")) open[oid] = mv;
   }
-  return byObj;
+  OPEN = open;
 }
-let OUTQ = {}, OPEN = {};
-function recompute(){ OUTQ = outByObject(); OPEN = openSorties(); }
+const dispoOf = r => Math.max(0, (r.f["Quantité"] ?? 0) - (OUTQ[r.id]||0));
 
 /* ======================= chargement ======================= */
 async function load(){
   S.loading = true; S.error = null; render();
   try{
-    const [unites, cats, objets, conso, personnes, mvts] = await Promise.all([
-      apiGet("unites"), apiGet("categories"), apiGet("objets"),
-      apiGet("consommables"), apiGet("personnes"), apiGet("mouvements")
+    const [unites, cats, objets, conso, personnes, mvts, lieux, sorties] = await Promise.all([
+      apiGet("unites"), apiGet("categories"), apiGet("objets"), apiGet("consommables"),
+      apiGet("personnes"), apiGet("mouvements"), apiGet("emplacements"), apiGet("sorties")
     ]);
     const map = r => ({ id:r.id, f:r.fields||{} });
-    DB.unites = unites.map(map); DB.cats = cats.map(map);
-    DB.objets = objets.map(map); DB.conso = conso.map(map);
-    DB.personnes = personnes.map(map); DB.mvts = mvts.map(map);
-    IX.unite = {}; DB.unites.forEach(u=>IX.unite[u.id]=u);
-    IX.cat = {};   DB.cats.forEach(c=>IX.cat[c.id]=c);
-    IX.objet = {}; DB.objets.forEach(o=>IX.objet[o.id]=o); DB.conso.forEach(o=>IX.objet[o.id]=o);
-    IX.personne = {}; DB.personnes.forEach(p=>IX.personne[p.id]=p);
+    DB.unites=unites.map(map); DB.cats=cats.map(map); DB.objets=objets.map(map);
+    DB.conso=conso.map(map); DB.personnes=personnes.map(map); DB.mvts=mvts.map(map);
+    DB.lieux=lieux.map(map); DB.sorties=sorties.map(map);
+    IX.unite={}; DB.unites.forEach(u=>IX.unite[u.id]=u);
+    IX.cat={};   DB.cats.forEach(c=>IX.cat[c.id]=c);
+    IX.objet={}; DB.objets.forEach(o=>IX.objet[o.id]=o); DB.conso.forEach(o=>IX.objet[o.id]=o);
+    IX.personne={}; DB.personnes.forEach(p=>IX.personne[p.id]=p);
+    IX.lieu={};  DB.lieux.forEach(l=>IX.lieu[l.id]=l);
+    IX.sortie={};DB.sorties.forEach(s=>IX.sortie[s.id]=s);
     recompute();
     if(S.me && S.me.role === "gerant" && !S.pov) S.pov = S.me.unite;
     if(S.pov && !S.ctx) S.ctx = S.pov;
     S.loading = false;
-  }catch(e){
-    S.loading = false; S.error = e.message || String(e);
-  }
+  }catch(e){ S.loading = false; S.error = e.message || String(e); }
   render();
 }
 
@@ -400,10 +438,7 @@ function render(){
   $("whoName").textContent = S.me ? S.me.nom : "Qui es-tu ?";
   $("whoDot").className = "dot" + (isAdmin() ? " adm" : "");
   $("povbar").innerHTML = S.pov
-    ? `<div class="povbar">Vue gérant · <b>${esc(uName(S.pov))}</b><button id="povOff">Vue intendant</button></div>` : "";
-  const off = $("povOff");
-  if(off) off.onclick = ()=>{ S.pov=null; S.ctx=null; S.cat=null; S.sel.clear(); render(); };
-
+    ? `<div class="povbar">Vue gérant · <b>${esc(uName(S.pov))}</b></div>` : "";
   document.querySelectorAll(".tab").forEach(t =>
     t.setAttribute("aria-selected", String(t.dataset.tab === S.tab)));
 
@@ -413,10 +448,8 @@ function render(){
       <button class="btn primary wide" id="retry">Réessayer</button>`;
     $("retry").onclick = load; $("actions").innerHTML=""; return;
   }
-
   if(!S.me){
-    $("main").innerHTML = `<div class="empty" style="padding-top:70px">
-      <div class="big">Le Local</div>
+    $("main").innerHTML = `<div class="empty" style="padding-top:70px"><div class="big">Le Local</div>
       Entre le code de ton unité pour ouvrir l'inventaire.</div>`;
     $("actions").innerHTML = `<div class="actionbar">
       <button class="btn primary wide" id="login">Entrer mon code</button></div>`;
@@ -425,40 +458,36 @@ function render(){
     return;
   }
 
-  const scoped = Object.keys(OUTQ).filter(id => {
-    const o = IX.objet[id]; if(!o) return false;
-    return arr(o.f["Unité"]).some(u => scopeIds().includes(u));
-  });
-  const b = $("outBadge"); b.hidden = !scoped.length; b.textContent = scoped.length;
+  const outIds = Object.keys(OUTQ).filter(id => IX.objet[id] && inScope(IX.objet[id]));
+  const b = $("outBadge"); b.hidden = !outIds.length; b.textContent = outIds.length;
 
-  if(S.tab === "search") return renderSearch();
-  if(S.tab === "out")    return renderOut(scoped);
-  if(S.cat)              return renderCat();
-  if(S.ctx)              return renderUnit();
+  if(S.pick)               return renderPicker();
+  if(S.tab === "search")   return renderSearch();
+  if(S.tab === "lieux")    return S.lieu ? renderLieu() : renderLieux();
+  if(S.tab === "sorties")  return S.sortie ? renderSortie() : renderSorties(outIds);
+  if(S.cat)                return renderCat();
+  if(S.ctx)                return renderUnit();
   if(S.pov){ S.ctx = S.pov; return renderUnit(); }
   return renderHome();
 }
 
 function countsFor(unitId){
-  let total = 0, out = 0;
-  for(const id of subtree(unitId)){
-    for(const src of [DB.objets, DB.conso]){
-      for(const r of src){
-        if(r.f["Archivé"]) continue;
-        if(!arr(r.f["Unité"]).includes(id)) continue;
-        total++; if(OUTQ[r.id]) out++;
-      }
-    }
+  let total=0, out=0;
+  const ids = subtree(unitId);
+  for(const src of [DB.objets, DB.conso]) for(const r of src){
+    if(r.f["Archivé"]) continue;
+    if(!arr(r.f["Unité"]).some(u=>ids.includes(u))) continue;
+    total++; if(OUTQ[r.id]) out++;
   }
   return {total, out};
 }
 
 function renderHome(){
   $("actions").innerHTML = "";
-  let total = 0, out = 0, late = 0;
+  let total=0, out=0, late=0;
   for(const src of [DB.objets, DB.conso]) for(const r of src){
     if(r.f["Archivé"]) continue; total++;
-    if(OUTQ[r.id]){ out++; const mv = OPEN[r.id]; if(mv && days(mv.f["Date"]) >= RETARD) late++; }
+    if(OUTQ[r.id]){ out++; const mv=OPEN[r.id]; if(mv && days(mv.f["Date"])>=RETARD) late++; }
   }
   $("main").innerHTML = `
     <div class="stats">
@@ -467,34 +496,28 @@ function renderHome(){
       <div class="stat late"><div class="v num">${late}</div><div class="l">dehors &gt; ${RETARD}j</div></div>
     </div>
     <div class="eyebrow">Le groupe</div>
-    <div class="rows">${roots().filter(u=>u.f["Actif"]).map(u=>{
-      const c = countsFor(u.id), k = kids(u.id).length;
+    <div class="rows">${roots().map(u=>{
+      const c=countsFor(u.id), k=kids(u.id).length;
       return `<button class="row ${c.total?"":"zero"}" data-go="${u.id}" data-out="${c.out?1:0}">
         <span class="row-bar"></span>
         <span class="row-main"><span class="row-name">${esc(u.f["Nom"])}</span>
           <span class="row-sub">${esc(u.f["Type"]||"")}${k?` · ${k} patrouille${k>1?"s":""}`:""}</span></span>
         <span class="row-right"><div class="row-count num">${c.total}</div>
           ${c.out?`<div class="row-out num">${c.out} dehors</div>`:""}</span>
-        <span class="chev">›</span></button>`;
-    }).join("")}</div>`;
+        <span class="chev">›</span></button>`;}).join("")}</div>`;
   wireGo();
 }
 
 function renderUnit(){
   const u = IX.unite[S.ctx]; if(!u){ S.ctx=null; return render(); }
-  const c = countsFor(u.id);
-  const ks = kids(u.id);
-  const cats = catsFor(u.id, null);
+  const c = countsFor(u.id), ks = kids(u.id), cats = catsFor(u.id, null);
   const canUp = !S.pov || u.id !== S.pov;
   $("main").innerHTML = `
-    <div class="crumb">
-      ${canUp?`<button class="back" id="back" aria-label="Retour">‹</button>`:""}
+    <div class="crumb">${canUp?`<button class="back" id="back">‹</button>`:""}
       <div><h2>${esc(u.f["Nom"])}</h2>
-        <p>${esc(u.f["Type"]||"")} · ${c.total} ligne${c.total>1?"s":""}${c.out?` · ${c.out} dehors`:""}</p></div>
-    </div>
+        <p>${esc(u.f["Type"]||"")} · ${c.total} ligne${c.total>1?"s":""}${c.out?` · ${c.out} dehors`:""}</p></div></div>
     ${ks.length?`<div class="eyebrow">Bancoffre</div>
-      <div class="rows">${ks.map(k=>{
-        const kc = countsFor(k.id);
+      <div class="rows">${ks.map(k=>{const kc=countsFor(k.id);
         return `<button class="row ${kc.total?"":"zero"}" data-go="${k.id}" data-out="${kc.out?1:0}">
           <span class="row-bar"></span>
           <span class="row-main"><span class="row-name">${esc(k.f["Nom"])}</span>
@@ -503,204 +526,363 @@ function renderUnit(){
             ${kc.out?`<div class="row-out num">${kc.out} dehors</div>`:""}</span>
           <span class="chev">›</span></button>`;}).join("")}</div>`:""}
     <div class="eyebrow ${ks.length?"sp":""}">Catégories</div>
-    ${cats.length ? `<div class="rows">${cats.map(cat=>catRow(cat,u.id)).join("")}</div>`
-      : `<div class="empty"><div class="big">Aucune catégorie</div>Rien n'est encore configuré pour cette unité.</div>`}`;
-  const bk = $("back");
-  if(bk) bk.onclick = ()=>{ S.ctx = first(u.f["Unité parente"]) || (S.pov||null); S.sel.clear(); render(); scrollTo(0,0); };
+    ${cats.length?`<div class="rows">${cats.map(x=>catRow(x,u.id)).join("")}</div>`
+      :`<div class="empty"><div class="big">Aucune catégorie</div>Rien n'est configuré pour cette unité.</div>`}`;
+  const bk=$("back");
+  if(bk) bk.onclick=()=>{ S.ctx = first(u.f["Unité parente"]) || (S.pov||null); render(); scrollTo(0,0); };
   wireGo(); wireCat();
 }
 
 function catRow(cat, unitId){
   const subs = catsFor(unitId, cat.id);
-  let n = linesOf(unitId, cat.id).length, out = 0;
-  for(const l of linesOf(unitId, cat.id)) if(OUTQ[l.rec.id]) out++;
-  for(const s of subs){ const ls = linesOf(unitId, s.id); n += ls.length; out += ls.filter(l=>OUTQ[l.rec.id]).length; }
+  let lines = linesOf(unitId, cat.id);
+  let n = lines.length, out = lines.filter(r=>OUTQ[r.id]).length;
+  for(const s of subs){ const ls = linesOf(unitId, s.id); n += ls.length; out += ls.filter(r=>OUTQ[r.id]).length; }
   const badges = [isShared(cat)?`<span class="tag sh">partagé</span>`:"",
-                  isLocked(cat)?`<span class="tag lk">verrouillé</span>`:""].join(" ");
+                  isLocked(cat)?`<span class="tag lk">verrouillé</span>`:""].filter(Boolean).join(" ");
   return `<button class="row ${n?"":"zero"}" data-cat="${cat.id}" data-out="${out?1:0}">
     <span class="row-bar"></span>
     <span class="row-main"><span class="row-name">${esc(cat.f["Nom"])}</span>
-      <span class="row-sub">${subs.length?`${subs.length} sous-section${subs.length>1?"s":""} · `:""}${badges||""}</span></span>
+      <span class="row-sub">${subs.length?`${subs.length} sous-section${subs.length>1?"s":""}${badges?" · ":""}`:""}${badges}</span></span>
     <span class="row-right"><div class="row-count num">${n}</div>
       ${out?`<div class="row-out num">${out} dehors</div>`:""}</span>
     <span class="chev">›</span></button>`;
 }
 
-/* regroupement des lignes mesurées par intervalle */
-function bucket(v, step){ const lo = Math.floor(v/step)*step; return [lo, lo+step]; }
+const bucket = (v, step) => { const lo = Math.floor(v/step)*step; return lo + "–" + (lo+step); };
 
 function renderCat(){
   const cat = IX.cat[S.cat], u = IX.unite[S.ctx];
   if(!cat || !u){ S.cat=null; return render(); }
-  const subs = catsFor(u.id, cat.id);
-  const lines = linesOf(u.id, cat.id);
+  const subs = catsFor(u.id, cat.id), lines = linesOf(u.id, cat.id);
   const mesure = cat.f["Mesure"] || "Aucune";
   const measured = /Longueur|Diam|Volume/.test(mesure);
   const editable = canEdit(cat);
-
   let body = "";
-  if(subs.length){
-    body += `<div class="eyebrow">Sous-sections</div>
-      <div class="rows">${subs.map(s=>catRow(s,u.id)).join("")}</div>`;
-  }
+  if(subs.length) body += `<div class="eyebrow">Sous-sections</div>
+    <div class="rows">${subs.map(s=>catRow(s,u.id)).join("")}</div>`;
   if(lines.length || !subs.length){
     if(subs.length) body += `<div class="eyebrow sp">Directement ici</div>`;
-    if(measured){
-      body += `<div class="seg" id="seg">
-        <button data-step="10" aria-pressed="${S.interval===10}">par 10 cm</button>
-        <button data-step="25" aria-pressed="${S.interval===25}">par 25 cm</button>
-        <button data-step="0" aria-pressed="${S.interval===0}">tout détailler</button></div>`;
-    }
+    if(measured) body += `<div class="seg" id="seg">
+      <button data-step="10" aria-pressed="${S.interval===10}">par 10 cm</button>
+      <button data-step="25" aria-pressed="${S.interval===25}">par 25 cm</button>
+      <button data-step="0" aria-pressed="${S.interval===0}">tout détailler</button></div>`;
     body += lines.length ? renderLines(lines, mesure, measured)
-      : `<div class="empty"><div class="big">Rien ici</div>${
-          editable ? "Ajoute la première ligne avec le bouton en bas."
-                   : "Cette catégorie est verrouillée — demande à l'intendant."}</div>`;
+      : `<div class="empty"><div class="big">Rien ici</div>${editable
+          ? "Ajoute la première ligne avec le bouton en bas."
+          : "Catégorie verrouillée — demande à l'intendant."}</div>`;
   }
-
   $("main").innerHTML = `
-    <div class="crumb"><button class="back" id="back" aria-label="Retour">‹</button>
+    <div class="crumb"><button class="back" id="back">‹</button>
       <div><h2>${esc(cat.f["Nom"])}</h2>
         <p>${esc(u.f["Nom"])} · ${lines.length} ligne${lines.length>1?"s":""}
         ${isShared(cat)?" · <span class='tag sh'>stock partagé</span>":""}
-        ${isLocked(cat)&&!isAdmin()?" · <span class='tag lk'>lecture seule</span>":""}</p></div>
-    </div>${body}
+        ${isLocked(cat)&&!isAdmin()?" · <span class='tag lk'>lecture seule</span>":""}</p></div></div>${body}
     ${isShared(cat)?`<p class="note">Stock commun : ce que ton unité prend, l'autre le voit manquer.</p>`:""}`;
-
-  $("back").onclick = ()=>{
-    S.cat = first(cat.f["Catégorie parente"]) || null; S.sel.clear(); render(); scrollTo(0,0); };
+  $("back").onclick = ()=>{ S.cat = first(cat.f["Catégorie parente"]) || null; render(); scrollTo(0,0); };
   const seg = $("seg");
   if(seg) seg.querySelectorAll("button").forEach(b=>b.onclick=()=>{
     S.interval = +b.dataset.step;
-    try{ localStorage.setItem(LS+"-interval", S.interval); }catch(e){}
+    try{ localStorage.setItem(LS+"-int", S.interval); }catch(e){}
     render(); });
-  wireCat(); wireItems(); renderActions(cat);
+  wireCat(); wireBlocks();
+  $("actions").innerHTML = editable
+    ? `<div class="actionbar"><button class="btn primary wide" id="add">+ Ajouter une ligne</button></div>` : "";
+  const a=$("add"); if(a) a.onclick = ()=> sheetItem(null, cat);
 }
 
 function renderLines(lines, mesure, measured){
-  const key = mesure.startsWith("Longueur") ? "Longueur (cm)"
-            : mesure.startsWith("Diam") ? "Longueur (cm)"
-            : mesure.startsWith("Volume") ? "Volume (L)" : null;
-  if(measured && key && S.interval > 0){
-    const groups = {};
-    for(const l of lines){
-      const v = l.rec.f[key];
-      const g = (v==null) ? "sans mesure" : bucket(v, S.interval).join("–") + (key.includes("L")?" L":" cm");
-      (groups[g] ||= []).push(l);
+  const key = /Volume/.test(mesure) ? "Volume (L)" : "Longueur (cm)";
+  const unit = /Volume/.test(mesure) ? " L" : " cm";
+  if(measured && S.interval > 0){
+    const g = {};
+    for(const r of lines){
+      const v = r.f[key];
+      const k = (v==null) ? "sans mesure" : bucket(v, S.interval) + unit;
+      (g[k] ||= []).push(r);
     }
-    return Object.entries(groups).sort((a,b)=>a[0].localeCompare(b[0],"fr",{numeric:true}))
-      .map(([g,ls]) => {
-        const tot = ls.reduce((s,l)=>s+(l.rec.f["Quantité"]||0),0);
-        const out = ls.reduce((s,l)=>s+(OUTQ[l.rec.id]||0),0);
-        return `<div class="eyebrow sp">${esc(g)} — ${tot} pièce${tot>1?"s":""}${out?` · ${out} dehors`:""}</div>
-                <div class="items">${ls.map(itemRow).join("")}</div>`;
+    return Object.entries(g).sort((a,b)=>a[0].localeCompare(b[0],"fr",{numeric:true}))
+      .map(([k,rs])=>{
+        const tot = rs.reduce((s,r)=>s+(r.f["Quantité"]||0),0);
+        const out = rs.reduce((s,r)=>s+(OUTQ[r.id]||0),0);
+        return `<div class="eyebrow sp">${esc(k)} — ${tot} pièce${tot>1?"s":""}${out?` · ${out} dehors`:""}</div>
+                <div class="blocks">${rs.map(r=>blk(r)).join("")}</div>`;
       }).join("");
   }
-  return `<div class="items">${lines.map(itemRow).join("")}</div>`;
+  return `<div class="blocks">${lines.map(r=>blk(r)).join("")}</div>`;
 }
 
-function itemRow(l){
-  const r = l.rec, f = r.f;
-  const out = OUTQ[r.id] || 0;
-  const q = f["Quantité"] ?? null;
+/* ---------- le bloc objet ---------- */
+function blk(r, opts){
+  opts = opts || {};
+  const f = r.f, out = OUTQ[r.id]||0, q = f["Quantité"] ?? null;
+  const dispo = q!=null ? Math.max(0, q-out) : null;
+  const lieu = lieuOf(r);
   const mv = OPEN[r.id];
-  const det = [f["Taille / détail"], f["Longueur (cm)"] != null ? f["Longueur (cm)"]+" cm" : null,
-               f["Volume (L)"] != null ? f["Volume (L)"]+" L" : null, f["Usage"]]
-              .filter(Boolean).join(" · ");
+  const photo = arr(f["Photo"])[0];
+  const det = [f["Taille / détail"], f["Longueur (cm)"]!=null?f["Longueur (cm)"]+" cm":null,
+               f["Volume (L)"]!=null?f["Volume (L)"]+" L":null, f["Usage"]].filter(Boolean).join(" · ");
   let pills = "";
-  if(out){ const d = mv ? days(mv.f["Date"]) : 0;
+  if(out){ const d = mv?days(mv.f["Date"]):0;
     pills += `<span class="pill ${d>=RETARD?"late":"out"}">${out} dehors${d?` · ${d}j`:""}</span>`; }
   const exp = f["Date d'expiration"];
   if(exp){ const dd = daysTo(exp);
-    pills += dd < 0 ? `<span class="pill exp">périmé</span>`
-           : dd <= EXP_SOON ? `<span class="pill soon">expire dans ${dd}j</span>` : ""; }
-  if(f["État"] === "Perdu") pills += `<span class="pill exp">perdu</span>`;
-  const dispo = (q!=null) ? Math.max(0, q - out) : null;
-  return `<button class="item ${S.sel.has(r.id)?"sel":""} ${f["État"]==="Perdu"?"gone":""}" data-id="${r.id}">
-    <span class="box">✓</span>
-    <span class="item-main"><span class="item-name">${esc(f["Nom"]||f["Code"]||"—")}</span>
-      <span class="item-meta">${det?`<span class="code">${esc(det)}</span>`:""}${pills}</span></span>
-    <span class="qty">${dispo!=null?`<b>${dispo}</b>${out?`sur ${q}`:"dispo"}`:"—"}</span></button>`;
+    pills += dd<0 ? `<span class="pill exp">périmé</span>`
+          : dd<=EXP_SOON ? `<span class="pill soon">expire dans ${dd}j</span>` : ""; }
+  if(f["État"]==="Perdu") pills += `<span class="pill exp">perdu</span>`;
+  const owner = arr(f["Unité"]).map(uName).filter(Boolean)[0];
+  const foreign = opts.showUnit && owner;
+
+  return `<div class="blk ${out?"out":""} ${f["État"]==="Perdu"?"gone":""} ${S.sel.has(r.id)?"sel":""}" data-blk="${r.id}">
+    ${opts.pickable?`<div class="blk-pick" data-pick="${r.id}"><span class="cbox">✓</span></div>`:""}
+    <div class="blk-body" data-open="${r.id}">
+      ${photo?`<img class="blk-thumb" src="${esc(photo.thumbnails?.small?.url||photo.url)}" alt="">`:""}
+      <div class="blk-txt">
+        <div class="blk-name">${esc(f["Nom"]||f["Code"]||"—")}</div>
+        <div class="blk-meta">${det?`<span class="code">${esc(det)}</span>`:""}
+          ${foreign?`<span class="tag">${esc(owner)}</span>`:""}${pills}</div>
+      </div>
+      <div class="blk-qty">
+        <div class="n ${out?"part":""}">${dispo!=null?dispo:"—"}</div>
+        <div class="loc">${esc(lieu?lieu.f["Nom"]:"sans emplacement")}</div>
+      </div>
+    </div>
+    ${opts.pickable?"":`<button class="blk-dots" data-dots="${r.id}" aria-label="Options">···</button>`}
+  </div>`;
 }
 
+/* ======================= lieux ======================= */
+function renderLieux(){
+  $("actions").innerHTML = `<div class="actionbar">
+    <button class="btn primary wide" id="addlieu">+ Nouvel emplacement</button></div>`;
+  $("addlieu").onclick = ()=>sheetLieu(null);
+  const counts = {};
+  for(const src of [DB.objets, DB.conso]) for(const r of src){
+    if(r.f["Archivé"] || !inScope(r)) continue;
+    const l = lieuOf(r); const k = l?l.id:"_";
+    counts[k] = (counts[k]||0)+1;
+  }
+  const list = DB.lieux.filter(l=>l.f["Active"]!==false)
+    .sort((a,b)=>(a.f["Ordre"]||99)-(b.f["Ordre"]||99));
+  $("main").innerHTML = `
+    <div class="eyebrow">Où sont rangées les choses</div>
+    <div class="rows">${list.map(l=>{
+      const n = counts[l.id]||0;
+      return `<button class="row ${n?"":"zero"}" data-lieu="${l.id}">
+        <span class="row-bar"></span>
+        <span class="row-main"><span class="row-name">${esc(l.f["Nom"])}</span>
+          <span class="row-sub">${esc(l.f["Type"]||"")}${l.f["Description"]?" · "+esc(l.f["Description"]):""}</span></span>
+        <span class="row-right"><div class="row-count num">${n}</div></span>
+        <span class="chev">›</span></button>`;}).join("")}</div>
+    ${counts["_"]?`<p class="note">${counts["_"]} ligne${counts["_"]>1?"s n'ont":" n'a"} aucun emplacement.
+      Elles apparaissent dans « À ranger » une fois l'emplacement renseigné.</p>`:""}`;
+  document.querySelectorAll("[data-lieu]").forEach(b=>b.onclick=()=>{
+    S.lieu = b.dataset.lieu; render(); scrollTo(0,0); });
+}
+
+function renderLieu(){
+  const l = IX.lieu[S.lieu]; if(!l){ S.lieu=null; return render(); }
+  const items = [];
+  for(const src of [DB.objets, DB.conso]) for(const r of src){
+    if(r.f["Archivé"] || !inScope(r)) continue;
+    const x = lieuOf(r); if(x && x.id === l.id) items.push(r);
+  }
+  const photo = arr(l.f["Photo"])[0];
+  $("main").innerHTML = `
+    <div class="crumb"><button class="back" id="back">‹</button>
+      <div><h2>${esc(l.f["Nom"])}</h2>
+        <p>${esc(l.f["Type"]||"")} · ${items.length} ligne${items.length>1?"s":""}</p></div></div>
+    ${photo?`<img class="bigphoto" src="${esc(photo.url)}" alt="">`:""}
+    ${l.f["Description"]?`<div class="banner">${esc(l.f["Description"])}</div>`:""}
+    ${items.length?`<div class="blocks">${items.map(r=>blk(r,{showUnit:true})).join("")}</div>`
+      :`<div class="empty"><div class="big">Rien ici</div>Aucun objet n'indique cet emplacement.</div>`}`;
+  $("back").onclick = ()=>{ S.lieu=null; render(); scrollTo(0,0); };
+  wireBlocks();
+  $("actions").innerHTML = `<div class="actionbar">
+    <button class="btn ghost wide" id="edl">Modifier cet emplacement</button></div>`;
+  $("edl").onclick = ()=>sheetLieu(l);
+}
+
+/* ======================= sorties ======================= */
+function renderSorties(outIds){
+  $("actions").innerHTML = `<div class="actionbar">
+    <button class="btn primary wide" id="newsortie">+ Nouvelle sortie</button></div>`;
+  $("newsortie").onclick = ()=>sheetSortie(null);
+
+  const mine = DB.sorties.filter(s=>{
+    const us = arr(s.f["Unité"]);
+    return isAdmin() || !us.length || us.some(u=>scopeIds().includes(u));
+  });
+  const actives = mine.filter(s=>s.f["Statut"]!=="Terminée")
+    .sort((a,b)=>(b.f["Départ"]||"").localeCompare(a.f["Départ"]||""));
+  const done = mine.filter(s=>s.f["Statut"]==="Terminée")
+    .sort((a,b)=>(b.f["Départ"]||"").localeCompare(a.f["Départ"]||"")).slice(0,6);
+
+  const sansSortie = outIds.filter(id=>{
+    const mv = OPEN[id]; return mv && !first(mv.f["Sortie"]);
+  });
+
+  $("main").innerHTML = `
+    ${actives.length?`<div class="eyebrow">En cours et à préparer</div>
+      <div class="rows">${actives.map(sortieRow).join("")}</div>`:""}
+    ${sansSortie.length?`<div class="eyebrow ${actives.length?"sp":""}">Sorti sans sortie</div>
+      <div class="blocks">${sansSortie.map(id=>blk(IX.objet[id],{showUnit:true})).join("")}</div>
+      <p class="note">Ces objets sont partis sans être rattachés à un camp. Tu peux les rendre
+      directement avec le menu ···.</p>`:""}
+    ${!actives.length && !sansSortie.length?`<div class="empty"><div class="big">Rien n'est sorti</div>
+      Crée une sortie quand tu prépares un camp, un HP ou un week-end.</div>`:""}
+    ${done.length?`<div class="eyebrow sp">Terminées</div>
+      <div class="rows">${done.map(sortieRow).join("")}</div>`:""}`;
+  document.querySelectorAll("[data-sortie]").forEach(b=>b.onclick=()=>{
+    S.sortie = b.dataset.sortie; render(); scrollTo(0,0); });
+  wireBlocks();
+}
+
+function mvtsOfSortie(sid){ return DB.mvts.filter(m=>first(m.f["Sortie"])===sid); }
+function sortieState(sid){
+  const ms = mvtsOfSortie(sid), pris = {}, rendus = {};
+  for(const m of ms){
+    const oid = first(m.f["Objet"]); if(!oid) continue;
+    const q = m.f["Quantité"]||1;
+    if(m.f["Type"]==="Sortie") pris[oid]=(pris[oid]||0)+q;
+    else rendus[oid]=(rendus[oid]||0)+q;
+  }
+  let dehors = 0;
+  for(const k in pris) dehors += Math.max(0, pris[k]-(rendus[k]||0));
+  return {pris, rendus, dehors, nItems:Object.keys(pris).length};
+}
+function sortieRow(s){
+  const st = sortieState(s.id);
+  const d = s.f["Départ"] ? new Date(s.f["Départ"]).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}) : "";
+  const statut = s.f["Statut"]||"Préparation";
+  return `<button class="row" data-sortie="${s.id}" data-out="${st.dehors?1:0}">
+    <span class="row-bar"></span>
+    <span class="row-main"><span class="row-name">${esc(s.f["Nom"])}</span>
+      <span class="row-sub">${esc(s.f["Type"]||"")}${d?" · "+d:""} · ${esc(statut)}</span></span>
+    <span class="row-right"><div class="row-count num">${st.nItems}</div>
+      ${st.dehors?`<div class="row-out num">${st.dehors} dehors</div>`:""}</span>
+    <span class="chev">›</span></button>`;
+}
+
+function renderSortie(){
+  const s = IX.sortie[S.sortie]; if(!s){ S.sortie=null; return render(); }
+  const st = sortieState(s.id);
+  const ids = Object.keys(st.pris);
+  const encore = ids.filter(id => (st.pris[id]-(st.rendus[id]||0)) > 0);
+  const rentres = ids.filter(id => (st.pris[id]-(st.rendus[id]||0)) <= 0);
+  const statut = s.f["Statut"]||"Préparation";
+
+  $("main").innerHTML = `
+    <div class="crumb"><button class="back" id="back">‹</button>
+      <div><h2>${esc(s.f["Nom"])}</h2>
+        <p>${esc(s.f["Type"]||"")} · ${esc(statut)}${s.f["Lieu"]?" · "+esc(s.f["Lieu"]):""}
+        ${s.f["Départ"]?" · départ "+new Date(s.f["Départ"]).toLocaleDateString("fr-FR"):""}</p></div></div>
+    ${encore.length?`<div class="eyebrow">Encore dehors — ${st.dehors} pièce${st.dehors>1?"s":""}</div>
+      <div class="blocks">${encore.map(id=>{
+        const r = IX.objet[id]; if(!r) return "";
+        const reste = st.pris[id]-(st.rendus[id]||0);
+        return `<div class="blk out" data-blk="${id}">
+          <div class="blk-body" data-open="${id}">
+            <div class="blk-txt"><div class="blk-name">${esc(r.f["Nom"])}</div>
+              <div class="blk-meta"><span class="code">${esc(arr(r.f["Unité"]).map(uName)[0]||"")}</span></div></div>
+            <div class="blk-qty"><div class="n part">${reste}</div><div class="loc">à rendre</div></div>
+          </div>
+          <button class="blk-dots" data-ret="${id}" aria-label="Rendre">↩</button>
+        </div>`;}).join("")}</div>`:""}
+    ${rentres.length?`<div class="eyebrow sp">Rentré — ${rentres.length} ligne${rentres.length>1?"s":""}</div>
+      <div class="blocks">${rentres.map(id=>{
+        const r = IX.objet[id]; if(!r) return "";
+        return `<div class="blk gone"><div class="blk-body">
+          <div class="blk-txt"><div class="blk-name">${esc(r.f["Nom"])}</div></div>
+          <div class="blk-qty"><div class="n">✓</div><div class="loc">rentré</div></div></div></div>`;}).join("")}</div>`:""}
+    ${!ids.length?`<div class="empty"><div class="big">Sortie vide</div>
+      Ajoute le matériel que vous emportez.</div>`:""}`;
+  $("back").onclick = ()=>{ S.sortie=null; render(); scrollTo(0,0); };
+
+  document.querySelectorAll("[data-ret]").forEach(b=>b.onclick=()=>{
+    const id = b.dataset.ret, reste = st.pris[id]-(st.rendus[id]||0);
+    sheetReturn([{id, q:reste}], s.id);
+  });
+  document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>sheetDots(b.dataset.open));
+
+  $("actions").innerHTML = `<div class="actionbar">
+    <button class="btn primary" id="addmat">+ Matériel</button>
+    ${encore.length?`<button class="btn ghost" id="allback">Tout rendre</button>`:""}
+    ${statut!=="Terminée"&&!encore.length&&ids.length?`<button class="btn ghost" id="close">Clôturer</button>`:""}
+  </div>`;
+  $("addmat").onclick = ()=>{ S.pick = {sortie:s.id}; S.sel.clear(); render(); scrollTo(0,0); };
+  const ab=$("allback");
+  if(ab) ab.onclick = ()=> sheetReturn(encore.map(id=>({id, q:st.pris[id]-(st.rendus[id]||0)})), s.id);
+  const cl=$("close");
+  if(cl) cl.onclick = async ()=>{
+    try{ await apiPatch("sorties",[{id:s.id, fields:{Statut:"Terminée"}}]); toast("Sortie clôturée"); await load(); }
+    catch(e){ toast("Échec"); }
+  };
+}
+
+/* ---------- le sélecteur de matériel pour une sortie ---------- */
+function renderPicker(){
+  const s = IX.sortie[S.pick.sortie];
+  const q = norm(S.q);
+  const pool = [];
+  for(const src of [DB.objets, DB.conso]) for(const r of src){
+    if(r.f["Archivé"] || !inScope(r)) continue;
+    if(dispoOf(r) <= 0) continue;
+    if(q && !(norm(r.f["Nom"]).includes(q) || norm(r.f["Code"]).includes(q))) continue;
+    pool.push(r);
+  }
+  const byCat = {};
+  for(const r of pool){ const c = catOf(r); const k = c?c.f["Nom"]:"Sans catégorie"; (byCat[k] ||= []).push(r); }
+
+  $("main").innerHTML = `
+    <div class="crumb"><button class="back" id="back">‹</button>
+      <div><h2>Que prenez-vous ?</h2><p>${esc(s?s.f["Nom"]:"")} · ${S.sel.size} sélectionné${S.sel.size>1?"s":""}</p></div></div>
+    <div class="search"><span style="color:var(--faint);font-size:17px">⌕</span>
+      <input id="q" type="search" placeholder="filtrer…" value="${esc(S.q)}" autocomplete="off"></div>
+    ${Object.keys(byCat).length ? Object.entries(byCat).sort((a,b)=>a[0].localeCompare(b[0],"fr"))
+      .map(([k,rs])=>`<div class="eyebrow sp">${esc(k)}</div>
+        <div class="blocks">${rs.map(r=>blk(r,{pickable:true,showUnit:true})).join("")}</div>`).join("")
+      : `<div class="empty"><div class="big">Rien de disponible</div>Tout est déjà sorti, ou le filtre est trop strict.</div>`}`;
+  $("back").onclick = ()=>{ S.pick=null; S.sel.clear(); S.q=""; render(); scrollTo(0,0); };
+  const inp = $("q");
+  inp.oninput = ()=>{ S.q = inp.value; const p = inp.selectionStart; render();
+    const n=$("q"); n.focus(); n.setSelectionRange(p,p); };
+  document.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{
+    const id = b.dataset.pick;
+    S.sel.has(id) ? S.sel.delete(id) : S.sel.add(id);
+    render();
+  });
+  $("actions").innerHTML = S.sel.size ? `<div class="actionbar">
+    <button class="btn ghost" id="clr">Annuler</button>
+    <button class="btn primary" id="ok">Emporter (${S.sel.size})</button></div>` : "";
+  const c=$("clr"); if(c) c.onclick=()=>{ S.sel.clear(); render(); };
+  const o=$("ok"); if(o) o.onclick=()=> sheetTake([...S.sel], S.pick.sortie);
+}
+
+/* ======================= recherche ======================= */
 function renderSearch(){
   $("actions").innerHTML = "";
-  const q = norm(S.q), scope = scopeIds();
+  const q = norm(S.q);
   const hits = !q ? [] : [...DB.objets, ...DB.conso].filter(r=>{
-    if(r.f["Archivé"]) return false;
-    if(!arr(r.f["Unité"]).some(u=>scope.includes(u))) return false;
-    const c = catOf(r);
+    if(r.f["Archivé"] || !inScope(r)) return false;
+    const c = catOf(r), l = lieuOf(r);
     return norm(r.f["Nom"]).includes(q) || norm(r.f["Code"]).includes(q)
-        || norm(r.f["Usage"]).includes(q) || norm(c&&c.f["Nom"]).includes(q);
-  }).slice(0,120);
+        || norm(r.f["Usage"]).includes(q) || norm(c&&c.f["Nom"]).includes(q)
+        || norm(l&&l.f["Nom"]).includes(q);
+  }).slice(0,150);
   $("main").innerHTML = `
     <div class="search"><span style="color:var(--faint);font-size:17px">⌕</span>
-      <input id="q" type="search" placeholder="tanjara, mal23a, mal de tête…" value="${esc(S.q)}"
+      <input id="q" type="search" placeholder="tanjara, mal23a, mal de tête, étagère…" value="${esc(S.q)}"
              autocomplete="off" autocapitalize="off" spellcheck="false"></div>
-    ${!q ? `<div class="empty"><div class="big">Cherche n'importe quoi</div>
-        Nom, code, usage d'un médicament, catégorie.${S.pov?`<br>Limité à ${esc(uName(S.pov))}.`:""}</div>`
-      : hits.length ? `<div class="eyebrow">${hits.length} résultat${hits.length>1?"s":""}</div>
-          <div class="items">${hits.map(r=>itemRow({rec:r})).join("")}</div>`
-      : `<div class="empty"><div class="big">Rien pour « ${esc(S.q)} »</div>
-         Essaie une autre orthographe.</div>`}`;
+    ${!q?`<div class="empty"><div class="big">Cherche n'importe quoi</div>
+        Nom, code, usage d'un médicament, catégorie, emplacement.${S.pov?`<br>Limité à ${esc(uName(S.pov))}.`:""}</div>`
+      : hits.length?`<div class="eyebrow">${hits.length} résultat${hits.length>1?"s":""}</div>
+          <div class="blocks">${hits.map(r=>blk(r,{showUnit:true})).join("")}</div>`
+      : `<div class="empty"><div class="big">Rien pour « ${esc(S.q)} »</div>Essaie une autre orthographe.</div>`}`;
   const i = $("q");
-  i.oninput = ()=>{ S.q = i.value; const p = i.selectionStart; render();
-    const n = $("q"); n.focus(); n.setSelectionRange(p,p); };
-  wireItems(); renderActions(null);
-}
-
-function renderOut(scoped){
-  $("actions").innerHTML = "";
-  if(!scoped.length){
-    $("main").innerHTML = `<div class="empty"><div class="big">Tout est au local</div>
-      Rien n'est sorti${S.pov?` chez ${esc(uName(S.pov))}`:""}.</div>`; return;
-  }
-  const groups = {};
-  for(const id of scoped){
-    const mv = OPEN[id]; if(!mv) continue;
-    const who = (arr(mv.f["Personne"]).map(p=>IX.personne[p]?.f["Nom"]).filter(Boolean)[0]) || "?";
-    const k = [who, mv.f["Motif"]||"", (mv.f["Date"]||"").slice(0,10)].join("|");
-    (groups[k] ||= {mv, who, items:[]}).items.push(id);
-  }
-  $("main").innerHTML = `<div class="eyebrow">${scoped.length} ligne${scoped.length>1?"s":""} hors du local</div>
-    ${Object.values(groups).sort((a,b)=>(a.mv.f["Date"]||"").localeCompare(b.mv.f["Date"]||"")).map(g=>{
-      const d = days(g.mv.f["Date"]);
-      const unit = arr(g.mv.f["Unité emprunteuse"]).map(uName)[0] || "";
-      return `<div class="outcard ${d>=RETARD?"late":""}">
-        <div class="outhead"><div><div class="outwho">${esc(g.who)}</div>
-          <div class="row-sub">${unit?`<span class="tag">${esc(unit)}</span>`:""}${
-            g.mv.f["Motif"]?" · "+esc(g.mv.f["Motif"]):""}${
-            g.mv.f["Chez qui"]?" · chez "+esc(g.mv.f["Chez qui"]):""}</div></div>
-          <div class="outwhen">${d} jour${d>1?"s":""}</div></div>
-        <div class="outlist">${g.items.map(id=>{
-          const o = IX.objet[id];
-          return `<span class="tagitem">${esc(o?o.f["Nom"]:id)} ×${OUTQ[id]}</span>`;}).join("")}</div></div>`;
-    }).join("")}
-    <p class="note">Au-delà de ${RETARD} jours la fiche passe en rouge.</p>`;
-}
-
-/* ======================= barre d'actions ======================= */
-function renderActions(cat){
-  const n = S.sel.size;
-  const editable = cat ? canEdit(cat) : false;
-  if(!n){
-    $("actions").innerHTML = (cat && editable)
-      ? `<div class="actionbar"><button class="btn primary wide" id="add">+ Ajouter une ligne</button></div>` : "";
-    const a = $("add"); if(a) a.onclick = ()=> S.me ? sheetItem(null, cat) : sheetWho();
-    return;
-  }
-  const ids = [...S.sel];
-  const nOut = ids.filter(i=>OUTQ[i]).length, nIn = ids.filter(i=>!OUTQ[i]).length;
-  $("actions").innerHTML = `<div class="actionbar">
-    <button class="btn ghost" id="clr">Annuler</button>
-    ${nIn?`<button class="btn primary" id="take">Je prends (${nIn})</button>`:""}
-    ${nOut?`<button class="btn primary" id="give">Je rends (${nOut})</button>`:""}
-    ${(n===1)?`<button class="btn ghost" id="more">···</button>`:""}
-  </div>`;
-  $("clr").onclick = ()=>{ S.sel.clear(); render(); };
-  const t=$("take"), g=$("give"), m=$("more");
-  if(t) t.onclick = ()=> S.me ? sheetMove(ids.filter(i=>!OUTQ[i]), "Sortie") : sheetWho();
-  if(g) g.onclick = ()=> S.me ? sheetMove(ids.filter(i=>OUTQ[i]),  "Retour") : sheetWho();
-  if(m) m.onclick = ()=> sheetMore(ids[0], cat);
+  i.oninput = ()=>{ S.q=i.value; const p=i.selectionStart; render();
+    const n=$("q"); n.focus(); n.setSelectionRange(p,p); };
+  wireBlocks();
 }
 
 /* ======================= feuilles ======================= */
@@ -708,23 +890,6 @@ function closeSheet(){ $("modal").innerHTML=""; }
 function openSheet(html){
   $("modal").innerHTML = `<div class="scrim" id="scrim"><div class="sheet">${html}</div></div>`;
   $("scrim").onclick = e => { if(e.target.id==="scrim") closeSheet(); };
-}
-
-function sheetWho(){
-  if(S.me){
-    openSheet(`<h3>${esc(S.me.nom)}</h3>
-      <p class="lede">${esc(uName(S.me.unite))} · ${S.me.role==="intendant"?"Intendant du groupe":"Gérant d'unité"}</p>
-      <button class="btn ghost wide" id="out" style="margin-bottom:10px">Changer de code</button>
-      <button class="btn primary wide" id="close">Fermer</button>`);
-    $("close").onclick = closeSheet;
-    $("out").onclick = ()=>{
-      S.me=null; S.pov=null; S.ctx=null; S.cat=null; S.sel.clear();
-      try{ localStorage.removeItem(LS); }catch(e){}
-      sheetLogin();
-    };
-    return;
-  }
-  sheetLogin();
 }
 
 function sheetLogin(){
@@ -738,111 +903,245 @@ function sheetLogin(){
     <div id="loginErr"></div>
     <button class="btn primary wide" id="ok">Entrer</button>`);
   const go = async ()=>{
-    const code = $("cd").value.trim(), nom = $("nm").value.trim();
+    const code=$("cd").value.trim(), nom=$("nm").value.trim();
     if(!code) return $("cd").focus();
     if(!nom) return $("nm").focus();
-    const btn = $("ok"); btn.disabled = true; btn.textContent = "Vérification…";
-    let res;
-    try{ res = await apiAuth(code); }
-    catch(e){ res = {ok:false, reason:"Serveur injoignable"}; }
-    if(!res.ok){
-      btn.disabled = false; btn.textContent = "Entrer";
-      $("loginErr").innerHTML = `<div class="banner err">${esc(res.reason||"Code refusé")}</div>`;
-      return;
-    }
-    let p = DB.personnes.find(x => norm(x.f["Nom"]) === norm(nom));
-    if(!p){
-      try{
-        const [rec] = await apiPost("personnes", [{fields:{ Nom:nom, "Unité":[res.unitId], Actif:true,
-          "Rôle": res.role==="intendant" ? "Intendant de groupe" : "Gérant d'unité" }}]);
-        p = {id:rec.id, f:rec.fields}; DB.personnes.push(p); IX.personne[p.id]=p;
-      }catch(e){ /* on continue sans fiche personne */ }
-    }
-    S.me = { nom, unite:res.unitId, role:res.role, pid: p ? p.id : null };
+    const btn=$("ok"); btn.disabled=true; btn.textContent="Vérification…";
+    let res; try{ res = await apiAuth(code); }catch(e){ res={ok:false,reason:"Serveur injoignable"}; }
+    if(!res.ok){ btn.disabled=false; btn.textContent="Entrer";
+      $("loginErr").innerHTML=`<div class="banner err">${esc(res.reason||"Code refusé")}</div>`; return; }
+    let p = DB.personnes.find(x=>norm(x.f["Nom"])===norm(nom));
+    if(!p){ try{
+      const [rec] = await apiPost("personnes",[{fields:{Nom:nom,"Unité":[res.unitId],Actif:true,
+        "Rôle": res.role==="intendant"?"Intendant de groupe":"Gérant d'unité"}}]);
+      p={id:rec.id,f:rec.fields}; DB.personnes.push(p); IX.personne[p.id]=p;
+    }catch(e){} }
+    S.me={nom, unite:res.unitId, role:res.role, pid:p?p.id:null};
     try{ localStorage.setItem(LS, JSON.stringify(S.me)); }catch(e){}
-    S.pov = res.role === "gerant" ? res.unitId : null;
-    S.ctx = S.pov; S.cat = null; S.sel.clear();
-    closeSheet();
-    if(DB.unites.length) render(); else load();
+    S.pov = res.role==="gerant" ? res.unitId : null;
+    S.ctx = S.pov; S.cat=null; closeSheet();
+    DB.unites.length ? render() : load();
   };
   $("ok").onclick = go;
-  $("cd").onkeydown = e => { if(e.key==="Enter") $("nm").focus(); };
-  $("nm").onkeydown = e => { if(e.key==="Enter") go(); };
+  $("cd").onkeydown = e=>{ if(e.key==="Enter") $("nm").focus(); };
+  $("nm").onkeydown = e=>{ if(e.key==="Enter") go(); };
   setTimeout(()=>$("cd").focus(), 50);
 }
 
-function sheetMove(ids, type){
-  const sortie = type === "Sortie";
-  let motif = "Camp";
-  const qtys = {};
-  ids.forEach(id=>{
-    const o = IX.objet[id];
-    qtys[id] = sortie ? Math.max(1,(o.f["Quantité"]||1) - (OUTQ[id]||0)) : (OUTQ[id]||1);
-  });
-  openSheet(`<h3>${sortie?"Tu prends":"Tu rends"} ${ids.length} ligne${ids.length>1?"s":""}</h3>
-    <p class="lede">Ajuste les quantités si tu n'en prends qu'une partie.</p>
-    <div class="recap">${ids.map(id=>{
-      const o = IX.objet[id];
-      const max = sortie ? (o.f["Quantité"]||1) - (OUTQ[id]||0) : (OUTQ[id]||1);
-      return `<div class="ln"><span>${esc(o.f["Nom"])}</span>
-        <input type="number" min="1" max="${max}" value="${qtys[id]}" data-q="${id}"></div>`;
-    }).join("")}</div>
-    ${sortie?`<div class="field"><label>Pour quoi faire</label>
-      <div class="chips" id="mt">${MOTIFS.map(m=>
-        `<button class="chip" data-m="${esc(m)}" aria-pressed="${m===motif}">${esc(m)}</button>`).join("")}</div></div>
-      <div class="two">
-        <div class="field"><label for="due">Retour prévu</label><input id="due" type="date"></div>
-        <div class="field"><label for="chez">Où ça part</label><input id="chez" type="text" placeholder="chez Jad, au camp…"></div>
-      </div>`:""}
-    <button class="btn primary wide" id="ok">Confirmer</button>`);
-  const mt = $("mt");
-  if(mt) mt.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
-    motif = c.dataset.m; mt.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===c))); });
-  $("ok").onclick = async ()=>{
-    document.querySelectorAll("[data-q]").forEach(i=>{ qtys[i.dataset.q] = Math.max(1, +i.value || 1); });
-    const due = $("due") ? $("due").value : "", chez = $("chez") ? $("chez").value.trim() : "";
-    closeSheet();
-    await commit(ids.map(id=>({
-      fields:{
-        Type: type, Date: new Date().toISOString(), "Quantité": qtys[id],
-        Objet:[id], ...(S.me.pid?{Personne:[S.me.pid]}:{}),
-        "Unité emprunteuse":[S.me.unite],
-        ...(sortie?{Motif:motif}:{}), ...(due?{"Retour prévu":due}:{}), ...(chez?{"Chez qui":chez}:{})
-      }})), sortie ? "Sortie enregistrée" : "Retour enregistré");
-  };
+function sheetWho(){
+  if(!S.me) return sheetLogin();
+  openSheet(`<h3>${esc(S.me.nom)}</h3>
+    <p class="lede">${esc(uName(S.me.unite))} · ${S.me.role==="intendant"?"Intendant du groupe":"Gérant d'unité"}</p>
+    <button class="btn ghost wide" id="out" style="margin-bottom:10px">Changer de code</button>
+    <button class="btn primary wide" id="close">Fermer</button>`);
+  $("close").onclick = closeSheet;
+  $("out").onclick = ()=>{ S.me=null; S.pov=null; S.ctx=null; S.cat=null;
+    try{ localStorage.removeItem(LS); }catch(e){} sheetLogin(); };
 }
 
-function sheetMore(id, cat){
-  const o = IX.objet[id];
-  const editable = cat ? canEdit(cat) : isAdmin();
-  openSheet(`<h3>${esc(o.f["Nom"])}</h3>
-    <p class="lede">${esc(o.f["Code"]||"")}</p>
-    <div class="rows">
-      ${editable?`<button class="row" id="edit"><span class="row-bar"></span>
-        <span class="row-main"><span class="row-name">Modifier</span>
-          <span class="row-sub">nom, quantité, taille</span></span><span class="chev">›</span></button>`:""}
-      <button class="row" id="lost"><span class="row-bar"></span>
-        <span class="row-main"><span class="row-name">Déclarer perdu</span>
-          <span class="row-sub">retiré de l'inventaire actif, gardé dans l'historique</span></span>
-        <span class="chev">›</span></button>
-      ${editable?`<button class="row" id="arch"><span class="row-bar"></span>
-        <span class="row-main"><span class="row-name">Archiver</span>
-          <span class="row-sub">n'apparaît plus, rien n'est effacé</span></span><span class="chev">›</span></button>`:""}
-    </div>`);
-  const e=$("edit"), l=$("lost"), a=$("arch");
-  if(e) e.onclick = ()=> sheetItem(o, cat);
+/* ---------- le menu ··· d'un objet ---------- */
+function sheetDots(id){
+  const r = IX.objet[id]; if(!r) return;
+  const cat = catOf(r), out = OUTQ[id]||0, dispo = dispoOf(r);
+  const editable = canEdit(cat);
+  const photo = arr(r.f["Photo"])[0];
+  const lieu = lieuOf(r);
+  openSheet(`<h3>${esc(r.f["Nom"])}</h3>
+    <p class="lede">${esc(r.f["Code"]||"")}${lieu?" · "+esc(lieu.f["Nom"]):""}
+      ${out?` · ${out} dehors`:""}</p>
+    ${photo?`<img class="bigphoto" src="${esc(photo.url)}" alt="">`:""}
+    <div class="menu">
+      ${dispo>0?`<button id="take"><span class="mi">↗</span><span>Je prends
+        <span class="msub">${dispo} disponible${dispo>1?"s":""}</span></span></button>`:""}
+      ${out?`<button id="give"><span class="mi">↩</span><span>Je rends
+        <span class="msub">${out} dehors</span></span></button>`:""}
+      ${editable?`<button id="edit"><span class="mi">✎</span><span>Modifier
+        <span class="msub">nom, quantité, emplacement</span></span></button>`:""}
+      ${editable?`<button id="photo"><span class="mi">◉</span><span>${photo?"Changer la photo":"Prendre une photo"}</span></button>`:""}
+      <button id="hist"><span class="mi">≡</span><span>Historique</span></button>
+      <button id="lost" class="dgr"><span class="mi">⚠</span><span>Déclarer perdu
+        <span class="msub">retiré de l'inventaire, gardé dans l'historique</span></span></button>
+      ${editable?`<button id="arch" class="dgr"><span class="mi">□</span><span>Archiver</span></button>`:""}
+    </div>
+    <input type="file" id="pf" accept="image/*" capture="environment" hidden>`);
+
+  const t=$("take"), g=$("give"), e=$("edit"), ph=$("photo"), h=$("hist"), l=$("lost"), a=$("arch");
+  if(t) t.onclick = ()=>{ closeSheet(); sheetTake([id], null); };
+  if(g) g.onclick = ()=>{ closeSheet(); sheetReturn([{id, q:out}], null); };
+  if(e) e.onclick = ()=>{ closeSheet(); sheetItem(r, cat); };
+  if(h) h.onclick = ()=>{ closeSheet(); sheetHist(id); };
+  if(ph) ph.onclick = ()=> $("pf").click();
+  const pf = $("pf");
+  if(pf) pf.onchange = async ()=>{
+    const f = pf.files[0]; if(!f) return;
+    closeSheet(); toast("Envoi de la photo…");
+    try{
+      const d = await shrink(f);
+      await apiUpload(tableOf(r), id, d, (r.f["Code"]||"photo")+".jpg");
+      toast("Photo enregistrée"); await load();
+    }catch(err){ toast(err.message || "Échec de l'envoi"); }
+  };
   if(l) l.onclick = async ()=>{
     closeSheet();
-    const q = OUTQ[id] || o.f["Quantité"] || 1;
-    await apiPatch("objets",[{id, fields:{"État":"Perdu"}}]).catch(()=>{});
-    await commit([{fields:{Type:"Perte déclarée", Date:new Date().toISOString(), "Quantité":q,
-      Objet:[id], ...(S.me&&S.me.pid?{Personne:[S.me.pid]}:{}), Notes:"Déclaré perdu depuis l'app"}}],
-      "Marqué perdu");
+    const q = out || r.f["Quantité"] || 1;
+    try{
+      await apiPatch(tableOf(r), [{id, fields:{"État":"Perdu"}}]).catch(()=>{});
+      await apiPost("mouvements", [{fields:{Type:"Perte déclarée", Date:new Date().toISOString(),
+        "Quantité":q, Objet:[id], ...(S.me.pid?{Personne:[S.me.pid]}:{}),
+        Notes:"Déclaré perdu depuis l'app"}}]);
+      toast("Marqué perdu"); await load();
+    }catch(err){ toast("Échec"); }
   };
   if(a) a.onclick = async ()=>{
     closeSheet();
-    try{ await apiPatch("objets",[{id, fields:{"Archivé":true}}]); toast("Archivé"); await load(); }
+    try{ await apiPatch(tableOf(r), [{id, fields:{"Archivé":true}}]); toast("Archivé"); await load(); }
     catch(err){ toast("Échec de l'archivage"); }
+  };
+}
+
+function sheetHist(id){
+  const ms = DB.mvts.filter(m=>first(m.f["Objet"])===id)
+    .sort((a,b)=>(b.f["Date"]||"").localeCompare(a.f["Date"]||"")).slice(0,25);
+  const r = IX.objet[id];
+  openSheet(`<h3>Historique</h3><p class="lede">${esc(r?r.f["Nom"]:"")}</p>
+    ${ms.length?`<div class="recap" style="max-height:340px">${ms.map(m=>{
+      const who = arr(m.f["Personne"]).map(p=>IX.personne[p]?.f["Nom"]).filter(Boolean)[0]||"?";
+      const so = first(m.f["Sortie"]); const sn = so && IX.sortie[so] ? IX.sortie[so].f["Nom"] : "";
+      const d = m.f["Date"] ? new Date(m.f["Date"]).toLocaleDateString("fr-FR") : "";
+      return `<div class="ln"><span>${esc(m.f["Type"])} ×${m.f["Quantité"]||1}
+        <span class="code">${esc(who)}${sn?" · "+esc(sn):""}</span></span>
+        <span class="code">${esc(d)}</span></div>`;}).join("")}</div>`
+    :`<div class="empty">Aucun mouvement enregistré.</div>`}
+    <button class="btn primary wide" id="close">Fermer</button>`);
+  $("close").onclick = closeSheet;
+}
+
+function sheetTake(ids, sortieId){
+  const qtys = {};
+  ids.forEach(id=>{ qtys[id] = Math.max(1, dispoOf(IX.objet[id])); });
+  const sorties = DB.sorties.filter(s=>s.f["Statut"]!=="Terminée");
+  openSheet(`<h3>Tu prends ${ids.length} ligne${ids.length>1?"s":""}</h3>
+    <p class="lede">Ajuste les quantités si tu n'en prends qu'une partie.</p>
+    <div class="recap">${ids.map(id=>{
+      const o = IX.objet[id], max = dispoOf(o);
+      return `<div class="ln"><span>${esc(o.f["Nom"])}</span>
+        <input type="number" min="1" max="${max}" value="${qtys[id]}" data-q="${id}"></div>`;}).join("")}</div>
+    ${sortieId?"":`<div class="field"><label for="so">Pour quelle sortie</label>
+      <select id="so"><option value="">Aucune — emprunt ponctuel</option>
+      ${sorties.map(s=>`<option value="${s.id}">${esc(s.f["Nom"])}</option>`).join("")}</select></div>`}
+    <div class="two">
+      <div class="field"><label for="due">Retour prévu</label><input id="due" type="date"></div>
+      <div class="field"><label for="chez">Où ça part</label>
+        <input id="chez" type="text" placeholder="chez Jad, au camp…"></div>
+    </div>
+    <button class="btn primary wide" id="ok">Confirmer</button>`);
+  $("ok").onclick = async ()=>{
+    document.querySelectorAll("[data-q]").forEach(i=>{ qtys[i.dataset.q] = Math.max(1, +i.value||1); });
+    const so = sortieId || ($("so") ? $("so").value : "");
+    const due = $("due").value, chez = $("chez").value.trim();
+    closeSheet();
+    const recs = ids.map(id=>{
+      const owner = arr(IX.objet[id].f["Unité"]);
+      const emprunt = S.me && !owner.includes(S.me.unite) && owner.length;
+      return { fields:{ Type:"Sortie", Date:new Date().toISOString(), "Quantité":qtys[id],
+        Objet:[id], ...(S.me.pid?{Personne:[S.me.pid]}:{}), "Unité emprunteuse":[S.me.unite],
+        ...(so?{Sortie:[so]}:{}), ...(due?{"Retour prévu":due}:{}), ...(chez?{"Chez qui":chez}:{}),
+        ...(emprunt?{"Statut emprunt":"Sans réponse"}:{}) } };
+    });
+    await commit(recs, "Sortie enregistrée");
+    S.pick = null; S.sel.clear(); S.q = "";
+    if(so){ S.tab="sorties"; S.sortie=so; }
+  };
+}
+
+function sheetReturn(list, sortieId){
+  const qtys = {}; list.forEach(x=>qtys[x.id]=x.q);
+  openSheet(`<h3>Tu rends ${list.length} ligne${list.length>1?"s":""}</h3>
+    <p class="lede">Ajuste si une partie seulement revient.</p>
+    <div class="recap">${list.map(x=>{
+      const o = IX.objet[x.id];
+      return `<div class="ln"><span>${esc(o?o.f["Nom"]:x.id)}</span>
+        <input type="number" min="1" max="${x.q}" value="${x.q}" data-q="${x.id}"></div>`;}).join("")}</div>
+    <button class="btn primary wide" id="ok">Confirmer le retour</button>`);
+  $("ok").onclick = async ()=>{
+    document.querySelectorAll("[data-q]").forEach(i=>{ qtys[i.dataset.q] = Math.max(1, +i.value||1); });
+    closeSheet();
+    await commit(list.map(x=>({ fields:{ Type:"Retour", Date:new Date().toISOString(),
+      "Quantité":qtys[x.id], Objet:[x.id], ...(S.me.pid?{Personne:[S.me.pid]}:{}),
+      ...(sortieId?{Sortie:[sortieId]}:{}) } })), "Retour enregistré");
+  };
+}
+
+function sheetSortie(s){
+  const isNew = !s;
+  const types = ["HP","Noël","Pâques","Camp d'été","Week-end","Réunion","Réparation","Autre"];
+  let type = s ? (s.f["Type"]||"Autre") : "Camp d'été";
+  openSheet(`<h3>${isNew?"Nouvelle sortie":"Modifier la sortie"}</h3>
+    <p class="lede">Un camp, un HP, un week-end — tout ce pour quoi on sort du matériel.</p>
+    <div class="field"><label>Type</label><div class="chips" id="tp">${types.map(t=>
+      `<button class="chip" data-t="${esc(t)}" aria-pressed="${t===type}">${esc(t)}</button>`).join("")}</div></div>
+    <div class="field"><label for="nm">Nom</label>
+      <input id="nm" type="text" value="${esc(s?s.f["Nom"]:"")}" placeholder="Camp d'été 2027"></div>
+    <div class="two">
+      <div class="field"><label for="d1">Départ</label>
+        <input id="d1" type="date" value="${esc(s?s.f["Départ"]||"":today())}"></div>
+      <div class="field"><label for="d2">Retour prévu</label>
+        <input id="d2" type="date" value="${esc(s?s.f["Retour prévu"]||"":"")}"></div>
+    </div>
+    <div class="field"><label for="lu">Lieu</label>
+      <input id="lu" type="text" value="${esc(s?s.f["Lieu"]:"")}" placeholder="Qornayel…"></div>
+    <button class="btn primary wide" id="ok">${isNew?"Créer":"Enregistrer"}</button>`);
+  const tp=$("tp");
+  tp.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{ type=c.dataset.t;
+    tp.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===c)));
+    if(!$("nm").value.trim()) $("nm").value = type + " " + new Date().getFullYear(); });
+  $("ok").onclick = async ()=>{
+    const nom = $("nm").value.trim() || (type + " " + new Date().getFullYear());
+    const f = { Nom:nom, Type:type, Lieu:$("lu").value.trim(),
+      ...($("d1").value?{"Départ":$("d1").value}:{}),
+      ...($("d2").value?{"Retour prévu":$("d2").value}:{}) };
+    closeSheet();
+    try{
+      if(isNew){
+        f.Statut = "Préparation"; f["Unité"] = [S.me.unite];
+        const [rec] = await apiPost("sorties",[{fields:f}]);
+        await load(); S.tab="sorties"; S.sortie=rec.id;
+        S.pick = {sortie:rec.id}; S.sel.clear(); render();
+        toast("Sortie créée — choisis le matériel");
+      }else{
+        await apiPatch("sorties",[{id:s.id, fields:f}]); toast("Enregistré"); await load();
+      }
+    }catch(e){ toast("Échec de l'enregistrement"); }
+  };
+}
+
+function sheetLieu(l){
+  const isNew = !l;
+  const types = ["Étagère","Coin d'unité","Bancoffre","Caisse ou boîte","Zone au sol","Hors du local","Autre"];
+  let type = l ? (l.f["Type"]||"Autre") : "Étagère";
+  openSheet(`<h3>${isNew?"Nouvel emplacement":"Modifier l'emplacement"}</h3>
+    <p class="lede">Un endroit précis du local, que quelqu'un puisse retrouver sans demander.</p>
+    <div class="field"><label>Type</label><div class="chips" id="tp">${types.map(t=>
+      `<button class="chip" data-t="${esc(t)}" aria-pressed="${t===type}">${esc(t)}</button>`).join("")}</div></div>
+    <div class="field"><label for="nm">Nom</label>
+      <input id="nm" type="text" value="${esc(l?l.f["Nom"]:"")}" placeholder="Étagère A"></div>
+    <div class="field"><label for="ds">Où c'est exactement</label>
+      <textarea id="ds" rows="2" placeholder="À droite en entrant, au-dessus des bidons">${esc(l?l.f["Description"]:"")}</textarea></div>
+    <button class="btn primary wide" id="ok">${isNew?"Ajouter":"Enregistrer"}</button>`);
+  const tp=$("tp");
+  tp.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{ type=c.dataset.t;
+    tp.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===c))); });
+  $("ok").onclick = async ()=>{
+    const nom = $("nm").value.trim(); if(!nom) return $("nm").focus();
+    const dup = DB.lieux.find(x=>norm(x.f["Nom"])===norm(nom) && (!l || x.id!==l.id));
+    if(dup){ toast("« "+dup.f["Nom"]+" » existe déjà"); return; }
+    const f = { Nom:nom, Type:type, Description:$("ds").value.trim() };
+    closeSheet();
+    try{
+      if(isNew){ f.Active = true; f.Ordre = 50; await apiPost("emplacements",[{fields:f}]); toast("Emplacement ajouté"); }
+      else { await apiPatch("emplacements",[{id:l.id, fields:f}]); toast("Enregistré"); }
+      await load();
+    }catch(e){ toast("Échec de l'enregistrement"); }
   };
 }
 
@@ -850,7 +1149,10 @@ function sheetItem(o, cat){
   const isNew = !o;
   const mesure = cat ? (cat.f["Mesure"]||"Aucune") : "Aucune";
   const conso = cat && cat.f["Type de contenu"] === "Consommables";
-  const table = conso ? "consommables" : "objets";
+  const table = o ? tableOf(o) : (conso ? "consommables" : "objets");
+  const curLieu = o ? lieuOf(o) : null;
+  const lieux = DB.lieux.filter(x=>x.f["Active"]!==false)
+    .sort((a,b)=>(a.f["Ordre"]||99)-(b.f["Ordre"]||99));
   openSheet(`<h3>${isNew?"Nouvelle ligne":"Modifier"}</h3>
     <p class="lede">${esc(cat?cat.f["Nom"]:"")}${cat&&isShared(cat)?" · stock partagé":""}</p>
     <div class="field"><label for="nm">Nom</label>
@@ -858,42 +1160,43 @@ function sheetItem(o, cat){
     <div class="two">
       <div class="field"><label for="qt">Quantité</label>
         <input id="qt" type="number" min="0" value="${o&&o.f["Quantité"]!=null?o.f["Quantité"]:1}"></div>
-      ${mesure.startsWith("Longueur")||mesure.startsWith("Diam")?`
-        <div class="field"><label for="ln">${esc(mesure)}</label>
-          <input id="ln" type="number" step="0.1" value="${o&&o.f["Longueur (cm)"]!=null?o.f["Longueur (cm)"]:""}"></div>`
-      : mesure.startsWith("Volume")?`
-        <div class="field"><label for="vl">Volume (L)</label>
-          <input id="vl" type="number" step="0.1" value="${o&&o.f["Volume (L)"]!=null?o.f["Volume (L)"]:""}"></div>`
+      ${/Longueur|Diam/.test(mesure)?`<div class="field"><label for="ln">${esc(mesure)}</label>
+        <input id="ln" type="number" step="0.1" value="${o&&o.f["Longueur (cm)"]!=null?o.f["Longueur (cm)"]:""}"></div>`
+      : /Volume/.test(mesure)?`<div class="field"><label for="vl">Volume (L)</label>
+        <input id="vl" type="number" step="0.1" value="${o&&o.f["Volume (L)"]!=null?o.f["Volume (L)"]:""}"></div>`
       :`<div class="field"><label for="tl">Taille / détail</label>
-          <input id="tl" type="text" value="${esc(o?o.f["Taille / détail"]:"")}" placeholder="kbire, grande…"></div>`}
+        <input id="tl" type="text" value="${esc(o?o.f["Taille / détail"]:"")}" placeholder="kbire, grande…"></div>`}
     </div>
+    <div class="field"><label for="lc">Emplacement</label>
+      <select id="lc"><option value="">— non précisé —</option>
+      ${lieux.map(x=>`<option value="${x.id}" ${curLieu&&curLieu.id===x.id?"selected":""}>${esc(x.f["Nom"])}</option>`).join("")}</select></div>
     ${conso?`<div class="two">
       <div class="field"><label for="us">Usage</label>
         <input id="us" type="text" value="${esc(o?o.f["Usage"]:"")}" placeholder="mal de tête"></div>
       <div class="field"><label for="ex">Expiration</label>
-        <input id="ex" type="date" value="${o&&o.f["Date d'expiration"]?o.f["Date d'expiration"]:""}"></div>
+        <input id="ex" type="date" value="${esc(o&&o.f["Date d'expiration"]?o.f["Date d'expiration"]:"")}"></div>
     </div>`:""}
     <button class="btn primary wide" id="ok">${isNew?"Ajouter":"Enregistrer"}</button>`);
   $("ok").onclick = async ()=>{
     const nom = $("nm").value.trim(); if(!nom) return $("nm").focus();
     const f = { Nom:nom, "Quantité": +$("qt").value || 0 };
-    if($("ln") && $("ln").value !== "") f["Longueur (cm)"] = +$("ln").value;
-    if($("vl") && $("vl").value !== "") f["Volume (L)"] = +$("vl").value;
+    if($("ln") && $("ln").value!=="") f["Longueur (cm)"] = +$("ln").value;
+    if($("vl") && $("vl").value!=="") f["Volume (L)"] = +$("vl").value;
     if($("tl")) f["Taille / détail"] = $("tl").value.trim();
     if($("us")) f["Usage"] = $("us").value.trim();
     if($("ex") && $("ex").value) f["Date d'expiration"] = $("ex").value;
+    const lc = $("lc").value;
+    f[table==="consommables" ? "Emplacement (lien)" : "Emplacement"] = lc ? [lc] : [];
     closeSheet();
     try{
       if(isNew){
         f["Unité"] = isShared(cat) ? arr(cat.f["Unités"]) : [S.ctx];
         f["Catégorie"] = [cat.id];
         f["Code"] = codeFor(cat);
-        if(!conso) f["État"] = "Bon";
-        await apiPost(table, [{fields:f}]);
-        toast("Ligne ajoutée");
+        if(table==="objets") f["État"] = "Bon";
+        await apiPost(table, [{fields:f}]); toast("Ligne ajoutée");
       }else{
-        await apiPatch(o.f["Usage"]!==undefined||conso?"consommables":"objets", [{id:o.id, fields:f}]);
-        toast("Enregistré");
+        await apiPatch(table, [{id:o.id, fields:f}]); toast("Enregistré");
       }
       await load();
     }catch(e){ toast("Échec de l'enregistrement"); }
@@ -903,31 +1206,35 @@ function codeFor(cat){
   const u = IX.unite[S.ctx];
   const uc = (u && u.f["Code"]) || "XXX";
   const cc = norm(cat.f["Nom"]).replace(/[^a-z]/g,"").slice(0,3).toUpperCase() || "GEN";
-  const n = [...DB.objets, ...DB.conso].filter(r => (r.f["Code"]||"").startsWith(`${uc}-${cc}-`)).length + 1;
+  const n = [...DB.objets, ...DB.conso].filter(r=>(r.f["Code"]||"").startsWith(`${uc}-${cc}-`)).length + 1;
   return `${uc}-${cc}-${String(n).padStart(2,"0")}`;
 }
 
 async function commit(records, okMsg){
   try{
     for(let i=0;i<records.length;i+=10) await apiPost("mouvements", records.slice(i,i+10));
-    S.sel.clear(); toast(okMsg); await load();
+    toast(okMsg); await load();
   }catch(e){ toast("Échec : " + (e.message||"")); }
 }
 
 /* ======================= câblage ======================= */
 function wireGo(){ document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{
-  S.ctx=b.dataset.go; S.cat=null; S.sel.clear(); render(); scrollTo(0,0); }); }
+  S.ctx=b.dataset.go; S.cat=null; render(); scrollTo(0,0); }); }
 function wireCat(){ document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{
-  S.cat=b.dataset.cat; S.sel.clear(); render(); scrollTo(0,0); }); }
-function wireItems(){ document.querySelectorAll(".item").forEach(b=>b.onclick=()=>{
-  const id=b.dataset.id; S.sel.has(id)?S.sel.delete(id):S.sel.add(id);
-  render(); }); }
+  S.cat=b.dataset.cat; render(); scrollTo(0,0); }); }
+function wireBlocks(){
+  document.querySelectorAll("[data-dots]").forEach(b=>b.onclick=e=>{
+    e.stopPropagation(); sheetDots(b.dataset.dots); });
+  document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>sheetDots(b.dataset.open));
+}
 
 $("whoBtn").onclick = sheetWho;
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
-  S.tab=t.dataset.tab;
+  S.tab=t.dataset.tab; S.pick=null; S.sel.clear(); S.q="";
   if(t.dataset.tab==="home"){ S.ctx=S.pov; S.cat=null; }
-  S.sel.clear(); render(); scrollTo(0,0); });
+  if(t.dataset.tab==="lieux") S.lieu=null;
+  if(t.dataset.tab==="sorties") S.sortie=null;
+  render(); scrollTo(0,0); });
 
 load();
 </script>
