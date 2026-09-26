@@ -50,6 +50,9 @@
   .brand{font-family:var(--cond);font-weight:700;font-size:20px;letter-spacing:.02em;
          text-transform:uppercase;line-height:1;flex:1;min-width:0}
   .brand span{color:var(--pine)}
+  .iconbtn{width:34px;height:34px;flex:none;display:grid;place-items:center;font-size:17px;
+           border:1px solid var(--line-strong);border-radius:9px;color:var(--muted)}
+  .iconbtn[aria-pressed="true"]{background:var(--signal-soft);border-color:var(--signal);color:var(--signal)}
   .whoami{display:flex;align-items:center;gap:7px;padding:5px 10px;border:1px solid var(--line-strong);
           border-radius:999px;font-size:12.5px;font-weight:500;white-space:nowrap;max-width:60%}
   .whoami b{font-weight:600;overflow:hidden;text-overflow:ellipsis}
@@ -120,7 +123,18 @@
   .blk-dots{flex:none;width:40px;border-left:1px solid var(--line);display:grid;place-items:center;
             font-size:18px;color:var(--muted);letter-spacing:1px}
   .blk-dots:hover{background:var(--sunk);color:var(--ink)}
-  .blk-thumb{width:38px;height:38px;border-radius:7px;object-fit:cover;flex:none;background:var(--sunk)}
+  .blk-thumb{width:38px;height:38px;border-radius:7px;object-fit:cover;flex:none;background:var(--sunk);
+             display:block}
+  .thumbbtn{flex:none;padding:0;border-radius:7px;position:relative;line-height:0}
+  .thumbbtn::after{content:"⤢";position:absolute;right:-2px;bottom:-2px;font-size:9px;line-height:1;
+                   background:var(--ink);color:var(--paper);border-radius:4px;padding:1px 2px}
+  .blk-noimg{width:38px;height:38px;border-radius:7px;flex:none;background:var(--sunk);
+             display:grid;place-items:center;color:var(--faint);font-size:15px}
+  .grphead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:22px 0 8px}
+  .grphead > span{font-family:var(--cond);text-transform:uppercase;letter-spacing:.07em;font-size:13px;
+                  font-weight:600;color:var(--muted);min-width:0}
+  .grphead .code{display:block;text-transform:none;letter-spacing:0;font-weight:400}
+  .grphead .btn{flex:none}
 
   .pill{font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;white-space:nowrap;
         font-family:var(--cond);text-transform:uppercase;letter-spacing:.05em}
@@ -237,6 +251,7 @@
   <header class="top">
     <div class="top-in">
       <div class="brand">Le <span>Local</span></div>
+      <button class="iconbtn" id="cfgBtn" title="Réglages du groupe" hidden>⚙</button>
       <button class="whoami" id="whoBtn"><span class="dot" id="whoDot"></span><b id="whoName">…</b></button>
     </div>
     <div id="povbar"></div>
@@ -354,12 +369,13 @@ const DB = { unites:[], cats:[], objets:[], conso:[], personnes:[], mvts:[], lie
 const IX = { unite:{}, cat:{}, objet:{}, personne:{}, lieu:{}, sortie:{} };
 const S = {
   tab:"home", ctx:null, cat:null, lieu:null, sortie:null, adm:"lieux", emp:"autres",
-  pick:null, bag:{}, q:"", me:null, pov:null, interval:25,
+  pick:null, bag:{}, grp:"lieu", q:"", me:null, pov:null, interval:25,
   loading:true, error:null
 };
 const LS = "local-intendance-v3";
 try{ const r = localStorage.getItem(LS); if(r) S.me = JSON.parse(r); }catch(e){}
 try{ const i = localStorage.getItem(LS+"-int"); if(i) S.interval = +i; }catch(e){}
+try{ const g = localStorage.getItem(LS+"-grp"); if(g) S.grp = g; }catch(e){}
 
 const isAdmin = () => !!S.me && S.me.role === "intendant" && !S.pov;
 const uName = id => (IX.unite[id] && IX.unite[id].f["Nom"]) || "—";
@@ -470,9 +486,8 @@ async function load(){
 
 /* ======================= rendu ======================= */
 function tabsHtml(){
-  const t = [["home","▤","Inventaire"],["sorties","↗","Sorties"],
+  const t = [["home","▤","Inventaire"],["sorties","↗","Sorties"],["emprunt","⇄","Emprunt"],
              ["lieux","▣","Lieux"],["search","⌕","Chercher"]];
-  if(isAdmin()) t.push(["reglages","⚙","Réglages"]);
   return t.map(([k,i,l])=>`<button class="tab" data-tab="${k}" aria-selected="${S.tab===k}">
     <span class="ic">${i}</span>${l}${k==="sorties"?`<span class="badge" id="outBadge" hidden></span>`:""}
   </button>`).join("");
@@ -491,6 +506,8 @@ function render(){
   $("whoDot").className = "dot" + (isAdmin() ? " adm" : "");
   $("povbar").innerHTML = S.pov
     ? `<div class="povbar">Vue gérant · <b>${esc(uName(S.pov))}</b></div>` : "";
+  $("cfgBtn").hidden = !isAdmin();
+  $("cfgBtn").setAttribute("aria-pressed", String(S.tab==="reglages"));
   $("tabs").innerHTML = tabsHtml(); wireTabs();
 
   if(S.loading){ $("main").innerHTML = `<div class="spin">Chargement…</div>`; $("actions").innerHTML=""; return; }
@@ -558,13 +575,7 @@ function renderHome(){
         <span class="row-right"><div class="row-count num">${c.total}</div>
           ${c.out?`<div class="row-out num">${c.out} dehors</div>`:""}</span>
         <span class="chev">›</span></button>`;}).join("")}</div>
-    <div class="eyebrow sp">Entre unités</div>
-    <div class="rows"><button class="row feature" id="emp">
-      <span class="row-bar"></span>
-      <span class="row-main"><span class="row-name">Emprunter</span>
-        <span class="row-sub">${lendable().length} objet${lendable().length>1?"s":""} prêté${lendable().length>1?"s":""} par les autres unités</span></span>
-      <span class="chev">›</span></button></div>`;
-  $("emp").onclick = ()=>{ S.tab="emprunt"; S.emp="autres"; S.q=""; render(); top0(); };
+    `;
   wireGo();
 }
 
@@ -710,8 +721,8 @@ function blk(r, opts){
          <div class="loc">${esc(lieu?lieu.f["Nom"]:"sans emplacement")}</div></div>`;
 
   return `<div class="blk ${out?"out":""} ${f["État"]==="Perdu"?"gone":""} ${opts.stepper&&S.bag[r.id]?"picked":""}" data-blk="${r.id}">
-    <div class="blk-body" ${opts.stepper?`data-plus="${r.id}"`:`data-open="${r.id}"`}>
-      ${photo?`<img class="blk-thumb" src="${esc(photo.thumbnails&&photo.thumbnails.small?photo.thumbnails.small.url:photo.url)}" alt="">`:""}
+    <div class="blk-body" ${opts.stepper?`data-toggle="${r.id}"`:`data-open="${r.id}"`}>
+      ${thumb(r, opts)}
       <div class="blk-txt">
         <div class="blk-name">${esc(f["Nom"]||f["Code"]||"—")}</div>
         <div class="blk-meta">${det?`<span class="code">${esc(det)}</span>`:""}
@@ -724,6 +735,27 @@ function blk(r, opts){
       ? `<button class="addbtn" data-borrow="${r.id}">Prendre</button>`
       : `<button class="blk-dots" data-dots="${r.id}" aria-label="Options">···</button>`}
   </div>`;
+}
+/* la vignette : cliquable quand il y a une photo, carré muet sinon */
+function thumb(r, opts){
+  const p = arr(r.f["Photo"])[0];
+  if(p) return `<button class="thumbbtn" data-photo="${r.id}" aria-label="Voir la photo">
+    <img class="blk-thumb" src="${esc(p.thumbnails&&p.thumbnails.small?p.thumbnails.small.url:p.url)}" alt=""></button>`;
+  return (opts && opts.stepper) ? `<span class="blk-noimg" aria-hidden="true">◌</span>` : "";
+}
+function wirePhotos(){
+  document.querySelectorAll("[data-photo]").forEach(b=>b.onclick=e=>{
+    e.stopPropagation(); sheetPhoto(b.dataset.photo); });
+}
+function sheetPhoto(id){
+  const r = IX.objet[id]; if(!r) return;
+  const p = arr(r.f["Photo"])[0]; if(!p) return;
+  const lieu = lieuOf(r);
+  openSheet(`<h3>${esc(r.f["Nom"])}</h3>
+    <p class="lede">${esc(r.f["Code"]||"")}${lieu?" · "+esc(lieu.f["Nom"]):""} · ${dispoOf(r)} disponible${dispoOf(r)>1?"s":""}</p>
+    <img class="bigphoto" src="${esc(p.url)}" alt="">
+    <button class="btn primary wide" id="close">Fermer</button>`);
+  $("close").onclick = closeSheet;
 }
 
 /* ======================= lieux ======================= */
@@ -861,10 +893,12 @@ function renderSortie(){
       if(!r) return "";
       const want = l.f["Quantité prévue"]||1, dispo = dispoOf(r);
       const manque = want > dispo;
+      const lu = lieuOf(r);
       return `<div class="blk" data-blk="${l.id}">
         <div class="blk-body" data-open="${id}">
+          ${thumb(r,{stepper:true})}
           <div class="blk-txt"><div class="blk-name">${esc(r.f["Nom"])}</div>
-            <div class="blk-meta"><span class="code">${esc(arr(r.f["Unité"]).map(uName)[0]||"")}</span>
+            <div class="blk-meta"><span class="code">${esc(arr(r.f["Unité"]).map(uName)[0]||"")}${lu?" · "+esc(lu.f["Nom"]):""}</span>
               ${manque?`<span class="pill late">${dispo} dispo seulement</span>`:""}</div></div>
         </div>
         <div class="step" data-stp="${l.id}">
@@ -900,7 +934,7 @@ function renderSortie(){
           <div class="blk-txt"><div class="blk-name">${esc(r.f["Nom"])}</div></div>
           <div class="blk-qty"><div class="n">✓</div><div class="loc">rentré</div></div></div></div>`;}).join("")}</div>`:""}
     ${!lg.length && !ids.length?`<div class="empty"><div class="big">Liste vide</div>
-      Ajoute le matériel que vous comptez emporter. Rien ne sort de l'inventaire
+      Appuie sur <b>+ Matériel</b> en bas pour composer la liste. Rien ne sort de l'inventaire
       tant que tu n'as pas appuyé sur « Tout emporter ».</div>`:""}`;
   $("back").onclick = ()=>{ S.sortie=null; render(); top0(); };
 
@@ -912,13 +946,14 @@ function renderSortie(){
   document.querySelectorAll("[data-lmin]").forEach(b=>b.onclick=()=>bumpLigne(b.dataset.lmin, -1));
   document.querySelectorAll("[data-ldel]").forEach(b=>b.onclick=()=>delLigne(b.dataset.ldel));
   document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>sheetDots(b.dataset.open));
+  wirePhotos();
 
   $("actions").innerHTML = `<div class="actionbar">
     ${lg.length?`<div class="hint">Rien n'est sorti de l'inventaire pour l'instant.</div>`:""}
     <button class="btn ${lg.length?"ghost":"primary"}" id="addmat">+ Matériel</button>
     ${lg.length?`<button class="btn primary" id="go">Tout emporter (${st.prevu})</button>`:""}
     ${encore.length?`<button class="btn ghost" id="allback">Tout rendre</button>`:""}
-    ${statut!=="Terminée"&&!encore.length&&!lg.length&&ids.length?`<button class="btn ghost" id="close">Clôturer</button>`:""}
+    ${statut!=="Terminée"&&ids.length?`<button class="btn ghost" id="close">Clôturer</button>`:""}
     <button class="btn ghost" id="edit">Modifier la sortie</button>
   </div>`;
   $("addmat").onclick = ()=>{ S.pick = {sortie:s.id}; S.bag={}; S.q=""; render(); top0(); };
@@ -927,10 +962,50 @@ function renderSortie(){
   const ab=$("allback");
   if(ab) ab.onclick = ()=> sheetReturn(encore.map(id=>({id, q:st.pris[id]-(st.rendus[id]||0)})), s.id);
   const cl=$("close");
-  if(cl) cl.onclick = async ()=>{
-    try{ await apiPatch("sorties",[{id:s.id, fields:{Statut:"Terminée"}}]); toast("Sortie clôturée"); await load(); }
-    catch(e){ toast("Échec"); }
-  };
+  if(cl) cl.onclick = ()=> cloturer(s, encore.map(id=>({id, q:st.pris[id]-(st.rendus[id]||0)})));
+}
+
+/* clôturer un camp dont tout n'est pas revenu : on ne fait pas semblant */
+function cloturer(s, restants){
+  const n = restants.reduce((a,x)=>a+x.q,0);
+  if(!n){
+    openSheet(`<h3>Clôturer « ${esc(s.f["Nom"])} »</h3>
+      <p class="lede">Tout est rentré. La sortie passe en « Terminée » et reste consultable.</p>
+      <button class="btn primary wide" id="ok">Clôturer</button>`);
+    $("ok").onclick = ()=>{ closeSheet(); finSortie(s, []); };
+    return;
+  }
+  openSheet(`<h3>${n} pièce${n>1?"s ne sont":" n'est"} pas revenue${n>1?"s":""}</h3>
+    <p class="lede">Que faire de ce qui manque ?</p>
+    <div class="recap">${restants.map(x=>{
+      const o = IX.objet[x.id];
+      return `<div class="ln"><span>${esc(o?o.f["Nom"]:x.id)}</span>
+        <span class="code">${x.q}</span></div>`;}).join("")}</div>
+    <div class="menu">
+      <button id="keep"><span class="mi">↗</span><span>Les laisser dehors
+        <span class="msub">la sortie se ferme, le matériel reste marqué sorti</span></span></button>
+      <button id="lost" class="dgr"><span class="mi">⚠</span><span>Les déclarer perdus
+        <span class="msub">retirés de l'inventaire, gardés dans l'historique</span></span></button>
+    </div>`);
+  $("keep").onclick = ()=>{ closeSheet(); finSortie(s, []); };
+  $("lost").onclick = ()=>{ closeSheet(); finSortie(s, restants); };
+}
+async function finSortie(s, perdus){
+  try{
+    if(perdus.length){
+      await apiPost("mouvements", perdus.map(x=>({fields:{Type:"Perte déclarée",
+        Date:new Date().toISOString(), "Quantité":x.q, Objet:[x.id], Sortie:[s.id],
+        ...(S.me.pid?{Personne:[S.me.pid]}:{}),
+        Notes:"Non revenu de « "+(s.f["Nom"]||"")+" »"}})));
+      const byT = {objets:[], consommables:[]};
+      for(const x of perdus){ const r = IX.objet[x.id]; if(r) byT[tableOf(r)].push({id:x.id, fields:{"État":"Perdu"}}); }
+      if(byT.objets.length) await apiPatch("objets", byT.objets).catch(()=>{});
+      if(byT.consommables.length) await apiPatch("consommables", byT.consommables).catch(()=>{});
+    }
+    await apiPatch("sorties",[{id:s.id, fields:{Statut:"Terminée"}}]);
+    toast(perdus.length ? "Clôturée — le manquant est marqué perdu" : "Sortie clôturée");
+    await load();
+  }catch(e){ toast("Échec de la clôture"); await load(); }
 }
 
 async function bumpLigne(lid, d){
@@ -1000,60 +1075,124 @@ function pickerPool(){
   }
   return pool;
 }
+/* trois façons de regrouper : par où c'est rangé (bancoffre, boîte),
+   par catégorie, ou par unité propriétaire */
+const GRP = {
+  lieu:  { label:"Emplacement", key:r=>{const l=lieuOf(r); return l?l.f["Nom"]:"Sans emplacement";} },
+  cat:   { label:"Catégorie",   key:r=>{const c=catOf(r); return c?c.f["Nom"]:"Sans catégorie";} },
+  unite: { label:"Unité",       key:r=>arr(r.f["Unité"]).map(uName)[0]||"Sans unité" },
+};
+let PGROUPS = {};
+const maxOf = r => Math.max(1, dispoOf(r));
+
 function pickerList(){
   const pool = pickerPool();
+  PGROUPS = {};
   if(!pool.length) return `<div class="empty"><div class="big">Rien à afficher</div>
     Tout est déjà sorti, ou le filtre est trop strict.</div>`;
-  const byCat = {};
-  for(const r of pool){ const c = catOf(r); (byCat[c?c.f["Nom"]:"Sans catégorie"] ||= []).push(r); }
-  return Object.entries(byCat).sort((a,b)=>a[0].localeCompare(b[0],"fr"))
-    .map(([k,rs])=>`<div class="eyebrow sp">${esc(k)}</div>
-      <div class="blocks">${rs.map(r=>blk(r,{stepper:true})).join("")}</div>`).join("");
+  const keyf = (GRP[S.grp]||GRP.lieu).key, g = {};
+  for(const r of pool) (g[keyf(r)] ||= []).push(r);
+  return Object.entries(g).sort((a,b)=>a[0].localeCompare(b[0],"fr",{numeric:true}))
+    .map(([k,rs],i)=>{
+      const gid = "g"+i; PGROUPS[gid] = rs.map(r=>r.id);
+      const full = rs.every(r=>(S.bag[r.id]||0) >= maxOf(r));
+      const tot = rs.reduce((s,r)=>s+dispoOf(r),0);
+      return `<div class="grphead">
+          <span>${esc(k)}<span class="code">${rs.length} ligne${rs.length>1?"s":""} · ${tot} pièce${tot>1?"s":""}</span></span>
+          <button class="btn sm ${full?"ghost":"primary"}" data-grp="${gid}" data-on="${full?0:1}">${full?"Aucun":"Tout"}</button>
+        </div>
+        <div class="blocks">${rs.map(r=>blk(r,{stepper:true})).join("")}</div>`;
+    }).join("");
 }
+
 function renderPicker(){
   const s = IX.sortie[S.pick.sortie];
   $("main").innerHTML = `
     <div class="crumb"><button class="back" id="back">‹</button>
       <div><h2>Qu'est-ce qu'on emporte ?</h2>
-        <p>${esc(s?s.f["Nom"]:"")} — touche une ligne pour l'ajouter</p></div></div>
+        <p>${esc(s?s.f["Nom"]:"")} — touche une ligne, elle part en entier</p></div></div>
+    <div class="seg" id="gseg">${Object.entries(GRP).map(([k,v])=>
+      `<button data-g="${k}" aria-pressed="${S.grp===k}">${esc(v.label)}</button>`).join("")}</div>
     <div class="search"><span style="color:var(--faint);font-size:17px">⌕</span>
       <input id="q" type="search" placeholder="tanjara, corde, lampe…" value="${esc(S.q)}"
              autocomplete="off" autocapitalize="off" spellcheck="false"></div>
     <div id="plist">${pickerList()}</div>`;
-  $("back").onclick = ()=>{ S.pick=null; S.bag={}; S.q=""; render(); top0(); };
+  $("back").onclick = quitPicker;
+  $("gseg").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    S.grp = b.dataset.g;
+    try{ localStorage.setItem(LS+"-grp", S.grp); }catch(e){}
+    render(); top0(); });
   const inp = $("q");
-  inp.oninput = ()=>{ S.q = inp.value; $("plist").innerHTML = pickerList(); wirePicker(); };
+  inp.oninput = ()=>{ S.q = inp.value; repaintList(); };
   wirePicker(); paintBag();
 }
+function repaintList(){ $("plist").innerHTML = pickerList(); wirePicker(); paintBag(); }
 function wirePicker(){
   document.querySelectorAll("[data-plus]").forEach(b=>b.onclick=e=>{
     e.stopPropagation(); bump(b.dataset.plus, 1); });
   document.querySelectorAll("[data-minus]").forEach(b=>b.onclick=e=>{
     e.stopPropagation(); bump(b.dataset.minus, -1); });
+  document.querySelectorAll("[data-toggle]").forEach(b=>b.onclick=()=>toggleAll(b.dataset.toggle));
+  document.querySelectorAll("[data-grp]").forEach(b=>b.onclick=()=>{
+    const on = b.dataset.on === "1";
+    for(const id of (PGROUPS[b.dataset.grp]||[])){
+      if(on) S.bag[id] = maxOf(IX.objet[id]); else delete S.bag[id];
+    }
+    repaintList();
+  });
+  wirePhotos();
+}
+/* toucher la ligne = tout prendre, ou tout enlever si c'était déjà pris */
+function toggleAll(id){
+  const r = IX.objet[id]; if(!r) return;
+  if(S.bag[id]) delete S.bag[id]; else S.bag[id] = maxOf(r);
+  paintRow(id); paintBag(); paintGroups();
 }
 function bump(id, d){
   const r = IX.objet[id]; if(!r) return;
-  const max = Math.max(1, dispoOf(r));
-  const v = Math.min(max, Math.max(0, (S.bag[id]||0) + d));
+  const v = Math.min(maxOf(r), Math.max(0, (S.bag[id]||0) + d));
   if(v) S.bag[id] = v; else delete S.bag[id];
-  const cell = $("bag-"+id);
-  if(cell){
-    cell.textContent = v;
-    const stp = cell.closest(".step"); if(stp) stp.classList.toggle("on", !!v);
-    const card = cell.closest(".blk"); if(card) card.classList.toggle("picked", !!v);
-  }
-  paintBag();
+  paintRow(id); paintBag(); paintGroups();
+}
+function paintRow(id){
+  const cell = $("bag-"+id); if(!cell) return;
+  const v = S.bag[id]||0;
+  cell.textContent = v;
+  const stp = cell.closest(".step"); if(stp) stp.classList.toggle("on", !!v);
+  const card = cell.closest(".blk"); if(card) card.classList.toggle("picked", !!v);
+}
+/* les boutons Tout/Aucun suivent l'état réel du groupe */
+function paintGroups(){
+  document.querySelectorAll("[data-grp]").forEach(b=>{
+    const ids = PGROUPS[b.dataset.grp]||[];
+    const full = ids.every(id=>(S.bag[id]||0) >= maxOf(IX.objet[id]));
+    b.dataset.on = full ? "0" : "1";
+    b.textContent = full ? "Aucun" : "Tout";
+    b.classList.toggle("ghost", full); b.classList.toggle("primary", !full);
+  });
 }
 function paintBag(){
   const n = bagTotal(), k = Object.keys(S.bag).length;
   $("actions").innerHTML = n ? `<div class="actionbar">
       <button class="btn ghost" id="clr">Vider</button>
       <button class="btn primary" id="ok">Ajouter ${k} ligne${k>1?"s":""} (${n})</button></div>`
-    : `<div class="actionbar"><div class="hint">Touche les objets à emporter. Tu ajusteras les quantités avec − et +.</div>
+    : `<div class="actionbar"><div class="hint">Touche un objet pour en prendre toute la quantité.
+        « Tout » prend un bancoffre entier. − et + pour n'en prendre qu'une partie.</div>
       <button class="btn ghost wide" id="clr2">Retour</button></div>`;
-  const c=$("clr"); if(c) c.onclick=()=>{ S.bag={}; render(); };
-  const c2=$("clr2"); if(c2) c2.onclick=()=>{ S.pick=null; S.bag={}; S.q=""; render(); top0(); };
+  const c=$("clr"); if(c) c.onclick=()=>{ S.bag={}; repaintList(); };
+  const c2=$("clr2"); if(c2) c2.onclick=quitPicker;
   const o=$("ok"); if(o) o.onclick = saveBag;
+}
+/* ne jamais perdre une sélection en appuyant sur retour */
+function quitPicker(){
+  const n = bagTotal();
+  if(!n){ S.pick=null; S.bag={}; S.q=""; render(); top0(); return; }
+  openSheet(`<h3>Tu as ${n} pièce${n>1?"s":""} sélectionnée${n>1?"s":""}</h3>
+    <p class="lede">Elles ne sont pas encore dans la liste de la sortie.</p>
+    <button class="btn primary wide" id="save" style="margin-bottom:10px">Les ajouter à la liste</button>
+    <button class="btn ghost wide" id="drop">Quitter sans les garder</button>`);
+  $("save").onclick = ()=>{ closeSheet(); saveBag(); };
+  $("drop").onclick = ()=>{ closeSheet(); S.pick=null; S.bag={}; S.q=""; render(); top0(); };
 }
 async function saveBag(){
   const sid = S.pick.sortie, existing = lignesOf(sid);
@@ -1132,10 +1271,9 @@ function renderEmprunt(){
           <span class="row-right"><span class="tag">mettre au prêt</span></span></button>`).join("")}</div>`;
   }
 
-  $("main").innerHTML = `<div class="crumb"><button class="back" id="back">‹</button>
-      <div><h2>Emprunter</h2><p>Entre unités du groupe</p></div></div>${seg}${body}`;
+  $("main").innerHTML = `<div class="crumb">
+      <div><h2>Emprunter</h2><p>${esc(uName(S.me.unite))} · entre unités du groupe</p></div></div>${seg}${body}`;
   $("actions").innerHTML = "";
-  $("back").onclick = ()=>{ S.tab="home"; S.q=""; render(); top0(); };
   $("eseg").querySelectorAll("button").forEach(b=>b.onclick=()=>{
     S.emp=b.dataset.e; S.q=""; render(); top0(); });
   const i = $("q");
@@ -1535,9 +1673,10 @@ function sheetSortie(s){
       if(isNew){
         f.Statut = "Préparation"; f["Unité"] = [S.me.unite];
         const rec = (await apiPost("sorties",[{fields:f}]))[0];
-        await load(); S.tab="sorties"; S.sortie=rec.id;
-        S.pick = {sortie:rec.id}; S.bag={}; S.q=""; render(); top0();
-        toast("Sortie créée — choisis le matériel");
+        await load();
+        S.tab="sorties"; S.sortie=rec.id; S.pick=null; S.bag={}; S.q="";
+        render(); top0();
+        toast("Sortie créée — ajoute le matériel");
       }else{
         await apiPatch("sorties",[{id:s.id, fields:f}]); toast("Enregistré"); await load();
       }
@@ -1840,9 +1979,12 @@ function wireBlocks(){
   document.querySelectorAll("[data-dots]").forEach(b=>b.onclick=e=>{
     e.stopPropagation(); sheetDots(b.dataset.dots); });
   document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>sheetDots(b.dataset.open));
+  wirePhotos();
 }
 
 $("whoBtn").onclick = sheetWho;
+$("cfgBtn").onclick = ()=>{ S.tab = S.tab==="reglages" ? "home" : "reglages";
+  S.pick=null; S.bag={}; S.q=""; render(); top0(); };
 load();
 </script>
 </body>
